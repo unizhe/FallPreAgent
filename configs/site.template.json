@@ -1,0 +1,29 @@
+{
+  "site_id": "unconfigured",
+  "scene_version": "unconfigured",
+  "person_id": "test_person_01",
+  "binding_id": "manual_binding_01",
+  "image_size": [
+    1920,
+    1080
+  ],
+  "calibration_id": "unconfigured",
+  "homography": null,
+  "floor_polygon_px": [],
+  "validation_error_m": 0.0,
+  "calibration_validated": false,
+  "calibration_image_points": [],
+  "calibration_world_points": [],
+  "validation_image_points": [],
+  "validation_world_points": [],
+  "camera_matrix": null,
+  "distortion_coefficients": null,
+  "footpoint_error_m": 0.1,
+  "obstacle_id": "registered_backpack_01",
+  "obstacle_footprint_m": [],
+  "obstacle_anchor_bbox_px": null,
+  "footprint_version": "unconfigured",
+  "background_reference": null,
+  "background_roi_px": [],
+  "synthetic": false
+}

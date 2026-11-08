@@ -1,0 +1,86 @@
+{
+  "schema": "fallpre.action_v3.protocol.v1",
+  "registered_date": "2026-10-18 Asia/Shanghai",
+  "prior_data": "All V1/V2 train/dev/test are development or regression data only; never claim them as new independent V3 test.",
+  "UTKinect": {
+    "train_subjects": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "dev_subjects": [
+      6,
+      7
+    ],
+    "test_subjects": [
+      8,
+      9,
+      10
+    ],
+    "trials": [
+      1,
+      2
+    ],
+    "selection": "All recorded RGB frames in walk official interval plus 30 frame prefix/suffix, and continuous sitDown-through-standUp interval plus 30 frame prefix/suffix. Preserve original frame IDs / 30 as timestamps; do not invent missing source observations.",
+    "labels": "Official walk/sitDown/standUp timestamps; other intervals unknown unless independently visually annotated before model test. pickUp is not silently relabeled bending."
+  },
+  "Weizmann": {
+    "train_subjects": [
+      "daria",
+      "denis",
+      "eli",
+      "ido",
+      "ira"
+    ],
+    "dev_subjects": [
+      "lena"
+    ],
+    "test_subjects": [
+      "lyova",
+      "moshe",
+      "shahar"
+    ],
+    "actions": [
+      "walk",
+      "bend"
+    ],
+    "viewpoint": "Official robust_view archive could not be acquired; excluded before training/testing. View diversity comes from UTKinect frontal/oblique and existing HADE/URFD plus Weizmann side-view sources. No claim of angle-disjoint testing."
+  },
+  "URFD_new": {
+    "train": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "dev": [
+      21,
+      22
+    ],
+    "test": [
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "camera": 0,
+    "labels": "Official falling state0, lying state1/background; state-1 unknown five-class and negative binary fall."
+  },
+  "model_selection": "Fit on train only, use subject-disjoint dev plus historical regression sources for model selection. Choose configurations before any new test predictions. Freeze artifact, manifest and inference source hashes before new test evaluation.",
+  "regression_constraints": "Prefer candidates improving standing_up, walking and bending on development while preserving V2 falling decisions and not increasing seated false rising. Frozen V2 fall branch may be retained explicitly; report routing/ablation, do not describe this as a single new end-to-end network.",
+  "test_metrics": [
+    "per-class precision recall F1 including unknown",
+    "source and subject breakdown",
+    "official fall windows and event overlap, delay",
+    "provisional static seated false-rise and unknown",
+    "matched V2 vs V3"
+  ],
+  "limitations": "UTKinect and Weizmann test actors are disjoint by provided identity names within each dataset, but room/camera is shared. URFD subject identities not established. Some seated boundaries require provisional visual annotation. Small public staged data is not broad deployment validation.",
+  "acquisition_amendment_before_training": "2026-10-18: official Weizmann host repeatedly returns empty response. Use named-original-AVI Kaggle mirror wendguan/weizmann for walk and bend, preserve predeclared subject split; record original archive hash unavailable."
+}

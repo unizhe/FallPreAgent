@@ -1,0 +1,26 @@
+{
+  "id": "kamal-fall-person-handoff",
+  "label": "人体检测＋独立倒地交接（实验）",
+  "path": "models/experimental-fall/kamal-yolov8-fall25.pt",
+  "sha256": "4a7eba2e982955d7c5f2ea65968f23332c123275116e75e2bac915f40ba749e0",
+  "revision": "607a55e0f2a3c056cf1afb82a9a6f8e65a97bc0b",
+  "source": "https://huggingface.co/kamalchibrani/yolov8_fall_detection_25",
+  "url": "https://huggingface.co/kamalchibrani/yolov8_fall_detection_25/resolve/607a55e0f2a3c056cf1afb82a9a6f8e65a97bc0b/best.pt",
+  "size_bytes": 6210350,
+  "license": "OpenRAIL (author model card); underlying Ultralytics licensing also applies",
+  "training_overlap": "Unknown: author does not disclose training membership; URFD overlap cannot be excluded.",
+  "classes": [
+    "fall-detected"
+  ],
+  "imgsz": 640,
+  "proposal_confidence": 0.25,
+  "iou": 0.45,
+  "strategy": "verified_handoff",
+  "person_model": {
+    "id": "yolo11n-person",
+    "label": "YOLO11n person",
+    "path": "models/yolo11n.pt",
+    "sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+    "source": "https://github.com/ultralytics/assets/releases/tag/v8.4.0"
+  }
+}

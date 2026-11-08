@@ -1,0 +1,41 @@
+{
+  "schema": "fallpre.action_v5.protocol.v1",
+  "objective": "Increase rising precision by causal terminal-standing modeling, retaining V4 event detections and seated false-positive rate; preserve all V3 walking/bending/falling outputs.",
+  "legacy": "All V4 train remains train; all V4 dev and former test are development/regression, including Telkom14/15. Never call these independent V5 tests.",
+  "new_rgb_test": {
+    "source": "doi:10.34820/FK2/VAEGNR",
+    "subjects": [
+      1,
+      2,
+      3
+    ],
+    "clips": "both before/after, fixed first20s, native30fps, no model-based selection"
+  },
+  "real_slow_source": {
+    "source": "https://github.com/stanfordnmbl/sit2stand-analysis",
+    "subjects": {
+      "TmJDsJCx": "train",
+      "I0tA8b18": "train",
+      "FWDyTLr2": "train",
+      "VOHFfenU": "dev",
+      "kP1305wr": "test",
+      "jsr1WRji": "test"
+    },
+    "selection": "Three available recordings with author-metric mean ascent>=2s, plus three available 1.77-1.92s recordings. YcE3Tlrl, zN0O4jLu, Ydhtzejw are absent from author archive and are excluded for availability only before model predictions. Natural timestamps; no speed augmentation. Explicit subject IDs from author code.",
+    "labels": "Manual review of skeleton contact sheets; not clinical slow diagnosis. Frames retain OpenPose confidence.",
+    "REMAP": "Public files still return empty response; replaced by accessible Stanford source.",
+    "caveat": "Author STS duration includes preparatory dwell; visible lift alone is generally <1.5s here. These are real slower complete transitions, not clinical bradykinetic ascent. Extra automatic slow candidates rejected before inference: visual review found camera motion/partial poses or merged cycles. No new model predictions used.",
+    "identity_limit": "Author anonymized subject IDs used; no claim of independently verified identity across source recordings. Primary new-person test is Telkom1/2/3. Exact duplicate skeletons prohibited across splits."
+  },
+  "selection": "Development only. Prefer rising precision/F1 improvement with V4 matched rising event hit count unchanged, seated false rises no higher, walking/bending/falling exact preservation. Report any remaining recall trade-off, use same source-clock sampling everywhere.",
+  "freeze": "Freeze model, manifest, protocol and inference sources before new test predictions. No tuning on test.",
+  "metrics": [
+    "rising precision/recall/F1",
+    "event recall and delay",
+    "standing false rise and exit lag",
+    "seated/forward-lean false rises",
+    "protected action parity",
+    "per-subject and real-slow subset"
+  ],
+  "limits": "New RGB tests same side-view setup, publisher processed images. Agent visual labels without independent human adjudication. REMAP is skeleton-input component evaluation, not RGB detection accuracy. No overhead validation."
+}

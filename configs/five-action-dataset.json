@@ -1,0 +1,959 @@
+{
+  "schema": "five-action-public-video/1",
+  "dataset": "URFD + HADE small fixed clip split",
+  "name": "Five-action pilot, 22 public clips, 2026-10-15",
+  "annotation_status": "agent_visual_provisional_requires_human_review",
+  "independent_human_annotators": 0,
+  "frozen_before_model_evaluation": true,
+  "clock": "Encoded video frame_index / inspected average FPS; not the URFD sensor synchronization clock. HADE original video frame rates vary.",
+  "split_policy": "11 train and 11 test complete source video groups, fixed before viewing model predictions; no source clip is split between train and test. This is NOT a subject-disjoint or scene-disjoint benchmark.",
+  "label_policy": {
+    "walking": "Visible bipedal locomotion, includes turning while moving; excludes stationary standing.",
+    "sitting_down": "Transition from standing to a chair, sofa or stool seat; excludes static sitting and squatting to the floor.",
+    "standing_up": "Transition from a chair, sofa or stool seat to upright; excludes straightening after bending or rising from floor.",
+    "bending": "Intentional trunk flexion while remaining supported on feet, including the return phase of the bending action.",
+    "falling": "Visible staged falling transition toward the ground; static lying after landing is background.",
+    "background": "Visible stationary standing/seated/lying or other reviewed non-target state.",
+    "unknown": "Unannotated gaps/ambiguous boundaries are excluded from supervised target labels.",
+    "boundaries": "Intervals are half-open [start_s,end_s); coarse visual boundary uncertainty approximately 0.13–0.2 seconds; not clinical onset labels."
+  },
+  "sources": [
+    {
+      "name": "UR Fall Detection",
+      "url": "https://fenix.ur.edu.pl/~mkepski/ds/uf.html",
+      "citation": "Kwolek & Kepski, Human fall detection on embedded platform using depth maps and wireless accelerometer, CMPB 117(3), 2014, 489–501.",
+      "license": "CC BY-NC-SA 4.0; non-commercial academic research"
+    },
+    {
+      "name": "HADE",
+      "url": "https://zenodo.org/records/8223591",
+      "doi": "10.5281/zenodo.8223591",
+      "citation": "Misha Karim (2023), Human-Actions-in-Diverse-Environments-HAR-Approach, Zenodo.",
+      "license": "CC BY 4.0",
+      "metadata_snapshot": "runs/five-action-20261015/inputs/zenodo-8223591.json"
+    }
+  ],
+  "limitations": [
+    "Pilot support is two training and two held-out source clips for the least-supported classes; not a representative accuracy estimate.",
+    "Repeated actors and rooms occur across train/test. HADE source-group provenance beyond published filenames is unknown; the split does not establish independent subjects.",
+    "Standing-up support is HADE only; bending/falling support is URFD only. Domain/class confounding remains despite including HADE sit/walk/background.",
+    "URFD falls are staged, not clinical falls. Five-class intervals were visually annotated by a coding agent without human adjudication; no official five-class timing ground truth is claimed.",
+    "Official URFD preview videos use lossy side-by-side depth/RGB encoding; this subset crops only RGB and re-encodes for the baseline.",
+    "Some HADE videos have variable frame timing; this pilot uses their encoded average-FPS frame clock and does not claim precise real-world transition latency."
+  ],
+  "entries": [
+    {
+      "clip_id": "urfd-adl-04",
+      "source_group_id": "urfd-adl-04",
+      "split": "train",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-04-rgb.mp4",
+      "video_sha256": "0eb0aa628d066216ce49f9a0099fcc588ebac2c0d038a084555d3bb1c0a2bb30",
+      "fps": 30.0,
+      "frame_count": 150,
+      "duration_s": 5.0,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-04-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-04-cam0.mp4",
+        "sha256": "2694f06b1277d9de412c3f4d57bcef03f5396866dbfdd17fcc91718083bb8ac0",
+        "bytes": 1209093,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-04-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0.3,
+          "end_s": 1.9,
+          "label": "walking"
+        },
+        {
+          "start_s": 2.05,
+          "end_s": 4.6,
+          "label": "bending"
+        },
+        {
+          "start_s": 4.7,
+          "end_s": 5,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-05",
+      "source_group_id": "urfd-adl-05",
+      "split": "test",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-05-rgb.mp4",
+      "video_sha256": "9fa208bc0aec0c75922391853ad578e23709d4832c6ad7c6358134b2acd7353a",
+      "fps": 30.0,
+      "frame_count": 180,
+      "duration_s": 6.0,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-05-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-05-cam0.mp4",
+        "sha256": "01265dfff0a718f9b4adfa1a6aeed224d3cd5aa8141c050687703c27c59f607b",
+        "bytes": 1436668,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-05-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0.8,
+          "end_s": 2.4,
+          "label": "walking"
+        },
+        {
+          "start_s": 2.85,
+          "end_s": 5.2,
+          "label": "bending"
+        },
+        {
+          "start_s": 5.3,
+          "end_s": 6,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-07",
+      "source_group_id": "urfd-adl-07",
+      "split": "train",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-07-rgb.mp4",
+      "video_sha256": "f4b600b93776912a57b01ce8b848f5581c8aeb21766e9d61ea6ba2e2df58b423",
+      "fps": 30.0,
+      "frame_count": 180,
+      "duration_s": 6.0,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-07-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-07-cam0.mp4",
+        "sha256": "0b346e78321c0cdfd281a19f3f4fd9cb6d61ed27f4caa1a955ac182c5b66a954",
+        "bytes": 1452738,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-07-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0.3,
+          "end_s": 2.8,
+          "label": "walking"
+        },
+        {
+          "start_s": 3.3,
+          "end_s": 4.3,
+          "label": "sitting_down"
+        },
+        {
+          "start_s": 4.4,
+          "end_s": 6,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-08",
+      "source_group_id": "urfd-adl-08",
+      "split": "test",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-08-rgb.mp4",
+      "video_sha256": "a72ad6c04767e5578969295b98777d35b6d15afcc374c611b23aa81b4a74afcf",
+      "fps": 30.0,
+      "frame_count": 180,
+      "duration_s": 6.0,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-08-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-08-cam0.mp4",
+        "sha256": "85ae4a3c4539b1bcbb9542ae530f1c1b1ebc0c02124fa417d95f7944789dfa75",
+        "bytes": 1451956,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-08-detail.jpg",
+      "segments": [
+        {
+          "start_s": 1.0,
+          "end_s": 3.35,
+          "label": "walking"
+        },
+        {
+          "start_s": 3.6,
+          "end_s": 4.65,
+          "label": "sitting_down"
+        },
+        {
+          "start_s": 4.75,
+          "end_s": 6,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-15",
+      "source_group_id": "urfd-adl-15",
+      "split": "train",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-15-rgb.mp4",
+      "video_sha256": "32652f5a3f179cef544d612af9a5f74a4e50ca13f523ac634b9a8a47961287f1",
+      "fps": 30.0,
+      "frame_count": 275,
+      "duration_s": 9.166666666666666,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-15-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-15-cam0.mp4",
+        "sha256": "202d009146a01f8cd367e89dab06866082f59f12934a72898bbe450b65d61768",
+        "bytes": 2284264,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-15-detail.jpg",
+      "segments": [
+        {
+          "start_s": 1.6,
+          "end_s": 5.1,
+          "label": "walking"
+        },
+        {
+          "start_s": 5.45,
+          "end_s": 8.3,
+          "label": "bending"
+        },
+        {
+          "start_s": 8.5,
+          "end_s": 9.166,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-16",
+      "source_group_id": "urfd-adl-16",
+      "split": "test",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-16-rgb.mp4",
+      "video_sha256": "eae52e56bb3d0dfa1700f3edc37028b939669d45317ee9bbca7a859819118ade",
+      "fps": 30.0,
+      "frame_count": 240,
+      "duration_s": 8.0,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-16-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-16-cam0.mp4",
+        "sha256": "9eb9d093c0fe04344591b2c2caf0d7d6204189d58a4a160b76d7eed7bf3b0f55",
+        "bytes": 1991883,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-16-detail.jpg",
+      "segments": [
+        {
+          "start_s": 1.6,
+          "end_s": 4.4,
+          "label": "walking"
+        },
+        {
+          "start_s": 4.75,
+          "end_s": 7.7,
+          "label": "bending"
+        },
+        {
+          "start_s": 7.8,
+          "end_s": 8,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-25",
+      "source_group_id": "urfd-adl-25",
+      "split": "train",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-25-rgb.mp4",
+      "video_sha256": "53cc908b9200c5dab73664075e288f26646780ffd789b5df767050a8bd9b6d19",
+      "fps": 30.0,
+      "frame_count": 110,
+      "duration_s": 3.6666666666666665,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-25-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-25-cam0.mp4",
+        "sha256": "243a9c9d04a58bc7f32e51bb608844a02ca0e966619f7d26272047c0ed5ef7bb",
+        "bytes": 866916,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-25-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 0.95,
+          "label": "background"
+        },
+        {
+          "start_s": 1.1,
+          "end_s": 1.95,
+          "label": "sitting_down"
+        },
+        {
+          "start_s": 2.1,
+          "end_s": 3.666,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-adl-27",
+      "source_group_id": "urfd-adl-27",
+      "split": "test",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/adl-27-rgb.mp4",
+      "video_sha256": "bef0bdc662cc16ac20a470f6fddfbcff713b44dc6af6dc37bb77a023f62ffb44",
+      "fps": 30.0,
+      "frame_count": 100,
+      "duration_s": 3.3333333333333335,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-27-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/adl-27-cam0.mp4",
+        "sha256": "10467f717f75e2b4a13c4112961f1fd759483a3255cc9c4a51d11867773cef7d",
+        "bytes": 799390,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/adl-27-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 1.3,
+          "label": "background"
+        },
+        {
+          "start_s": 1.45,
+          "end_s": 2.2,
+          "label": "sitting_down"
+        },
+        {
+          "start_s": 2.35,
+          "end_s": 3.333,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-fall-01",
+      "source_group_id": "urfd-fall-01",
+      "split": "train",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/fall-01-rgb.mp4",
+      "video_sha256": "5af7f58dabb25b0d30051ebf64d29ce26daabe481d192b577ddf5379ab9d7748",
+      "fps": 30.0,
+      "frame_count": 160,
+      "duration_s": 5.333333333333333,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/fall-01-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/fall-01-cam0.mp4",
+        "sha256": "5fcb77e5b5a35d73ab8cda856ea58bd9e6acd7552e16fc6d22a623556bee76bc",
+        "bytes": 1299104,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/fall-01-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 1.1,
+          "label": "background"
+        },
+        {
+          "start_s": 1.3,
+          "end_s": 2.5,
+          "label": "walking"
+        },
+        {
+          "start_s": 2.8,
+          "end_s": 4.05,
+          "label": "falling"
+        },
+        {
+          "start_s": 4.2,
+          "end_s": 5.333,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-fall-02",
+      "source_group_id": "urfd-fall-02",
+      "split": "train",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/fall-02-rgb.mp4",
+      "video_sha256": "81cf198359d42a26e454e6e0443bc2a543347432082444d3793b6e2921b54512",
+      "fps": 30.0,
+      "frame_count": 110,
+      "duration_s": 3.6666666666666665,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/fall-02-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/fall-02-cam0.mp4",
+        "sha256": "4135a85724b5be8a248427cf49d4f28950cc1d2201434cf99f776fb4bbfd77b7",
+        "bytes": 878005,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/fall-02-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 1.35,
+          "label": "background"
+        },
+        {
+          "start_s": 1.5,
+          "end_s": 2.55,
+          "label": "falling"
+        },
+        {
+          "start_s": 2.7,
+          "end_s": 3.666,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-fall-03",
+      "source_group_id": "urfd-fall-03",
+      "split": "test",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/fall-03-rgb.mp4",
+      "video_sha256": "4a4bd9462a6ec515784a52d15224f2dab071b98ec436f89b87426e05162a478a",
+      "fps": 30.0,
+      "frame_count": 215,
+      "duration_s": 7.166666666666667,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/fall-03-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/fall-03-cam0.mp4",
+        "sha256": "6496581c9408ad87e7bbd75317e7112cb01b66755310990effa68a4badad2aff",
+        "bytes": 1756850,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/fall-03-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0.3,
+          "end_s": 5.1,
+          "label": "walking"
+        },
+        {
+          "start_s": 5.25,
+          "end_s": 6.2,
+          "label": "falling"
+        },
+        {
+          "start_s": 6.35,
+          "end_s": 7.166,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "urfd-fall-04",
+      "source_group_id": "urfd-fall-04",
+      "split": "test",
+      "dataset": "URFD",
+      "video_path": "runs/five-action-20261015/inputs/urfd/fall-04-rgb.mp4",
+      "video_sha256": "b5717a7d7414e1974d0645918d180971c2eee4ce96654c36d51779e60fe96aec",
+      "fps": 30.0,
+      "frame_count": 96,
+      "duration_s": 3.2,
+      "source": {
+        "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/fall-04-cam0.mp4",
+        "path": "runs/five-action-20261015/inputs/urfd/fall-04-cam0.mp4",
+        "sha256": "3cee6b1d27192184b299cce8fe289f013b1d69b89ba7bc92c025da849b10cece",
+        "bytes": 754417,
+        "license": "CC BY-NC-SA 4.0"
+      },
+      "derivation": {
+        "kind": "right_half_rgb",
+        "source_width": 640,
+        "source_height": 240,
+        "codec": "mp4v",
+        "opencv_version": "4.14.0"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets at 8-frame spacing (0.267 seconds); no action-model predictions viewed. Five-class time labels are provisional, not official URFD annotations.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/fall-04-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 0.5,
+          "label": "background"
+        },
+        {
+          "start_s": 0.65,
+          "end_s": 1.7,
+          "label": "falling"
+        },
+        {
+          "start_s": 1.85,
+          "end_s": 3.2,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-stand-up-4",
+      "source_group_id": "hade-mahad-stand-up-4",
+      "split": "train",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad stand-up 4.mp4",
+      "video_sha256": "aea74f5a11d979334f8082a51734fad970bc706b6143a382dc01b5f0e35aaab2",
+      "fps": 25.549366502492923,
+      "frame_count": 103,
+      "duration_s": 4.031411111111111,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20stand-up%204.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad stand-up 4.mp4",
+        "sha256": "aea74f5a11d979334f8082a51734fad970bc706b6143a382dc01b5f0e35aaab2",
+        "bytes": 970293,
+        "published_checksum": "md5:efbdf3fe3072b13d2bdd0e2115d676ba",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-stand-up-4-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 0.9,
+          "label": "background"
+        },
+        {
+          "start_s": 1.15,
+          "end_s": 2.95,
+          "label": "standing_up"
+        },
+        {
+          "start_s": 3.1,
+          "end_s": 4.03,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-stand-up-6",
+      "source_group_id": "hade-mahad-stand-up-6",
+      "split": "train",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad stand-up 6.mp4",
+      "video_sha256": "d8d7342f105d7adecbd71a1b5f2c1b6282ce4868e165c9423f2c599b7e4b7e9e",
+      "fps": 19.054023761488455,
+      "frame_count": 102,
+      "duration_s": 5.3532,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20stand-up%206.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad stand-up 6.mp4",
+        "sha256": "d8d7342f105d7adecbd71a1b5f2c1b6282ce4868e165c9423f2c599b7e4b7e9e",
+        "bytes": 1208521,
+        "published_checksum": "md5:ed280ec1757dba38c3262c456a09ff1e",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-stand-up-6-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 2.4,
+          "label": "background"
+        },
+        {
+          "start_s": 2.65,
+          "end_s": 4.1,
+          "label": "standing_up"
+        },
+        {
+          "start_s": 4.3,
+          "end_s": 5.35,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-stand-up-5",
+      "source_group_id": "hade-mahad-stand-up-5",
+      "split": "test",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad stand-up 5.mp4",
+      "video_sha256": "a4dedb77a445807cf751d5fa437281688582d258eacf4c6d58b30db760edd680",
+      "fps": 26.02590485413388,
+      "frame_count": 86,
+      "duration_s": 3.3044000000000002,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20stand-up%205.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad stand-up 5.mp4",
+        "sha256": "a4dedb77a445807cf751d5fa437281688582d258eacf4c6d58b30db760edd680",
+        "bytes": 787101,
+        "published_checksum": "md5:acb0e2041f6dd69b348f4e5265e86ad5",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-stand-up-5-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 0.15,
+          "label": "background"
+        },
+        {
+          "start_s": 0.25,
+          "end_s": 1.2,
+          "label": "standing_up"
+        },
+        {
+          "start_s": 1.35,
+          "end_s": 3.3,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-stand-up-8",
+      "source_group_id": "hade-mahad-stand-up-8",
+      "split": "test",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad stand-up 8.mp4",
+      "video_sha256": "cac085faff6334fd62e633d9d54fa9f06c563c4168cc2f000176e144323ad47c",
+      "fps": 30.02095212283573,
+      "frame_count": 96,
+      "duration_s": 3.1977666666666664,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20stand-up%208.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad stand-up 8.mp4",
+        "sha256": "cac085faff6334fd62e633d9d54fa9f06c563c4168cc2f000176e144323ad47c",
+        "bytes": 809120,
+        "published_checksum": "md5:c4f0c165991f14d70abf6dcf8112c3a0",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-stand-up-8-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 0.4,
+          "label": "background"
+        },
+        {
+          "start_s": 0.65,
+          "end_s": 1.65,
+          "label": "standing_up"
+        },
+        {
+          "start_s": 1.8,
+          "end_s": 3.19,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-sit-11",
+      "source_group_id": "hade-mahad-sit-11",
+      "split": "train",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad sit 11.mp4",
+      "video_sha256": "8ef77cb44a0274dfc366e02a76d85936d355c005363c88cb708f04b1f4dcd2b5",
+      "fps": 24.835992013524137,
+      "frame_count": 119,
+      "duration_s": 4.791433333333333,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20sit%2011.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad sit 11.mp4",
+        "sha256": "8ef77cb44a0274dfc366e02a76d85936d355c005363c88cb708f04b1f4dcd2b5",
+        "bytes": 1166793,
+        "published_checksum": "md5:2d24dbee32f61ccd4588c87e5fff196a",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-sit-11-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 0.9,
+          "label": "background"
+        },
+        {
+          "start_s": 1.1,
+          "end_s": 3.2,
+          "label": "sitting_down"
+        },
+        {
+          "start_s": 3.4,
+          "end_s": 4.79,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-sit-12",
+      "source_group_id": "hade-mahad-sit-12",
+      "split": "test",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad sit 12.mp4",
+      "video_sha256": "825f6b942798710187367f2c0b4d329baadab138696bdbfd732efe0bf286c416",
+      "fps": 25.93952456736131,
+      "frame_count": 138,
+      "duration_s": 5.3200666666666665,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20sit%2012.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad sit 12.mp4",
+        "sha256": "825f6b942798710187367f2c0b4d329baadab138696bdbfd732efe0bf286c416",
+        "bytes": 1281393,
+        "published_checksum": "md5:c04615ec3ee7f82a62bd9b0075becf6f",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-sit-12-detail.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 3,
+          "label": "background"
+        },
+        {
+          "start_s": 3.25,
+          "end_s": 4.3,
+          "label": "sitting_down"
+        },
+        {
+          "start_s": 4.5,
+          "end_s": 5.32,
+          "label": "background"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-walk-3",
+      "source_group_id": "hade-mahad-walk-3",
+      "split": "train",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad walk 3.mp4",
+      "video_sha256": "1bb6fc40a10823accdff48ff2e4c36f0b771ba064782b1544e5fb6cf85ee74ee",
+      "fps": 30.0,
+      "frame_count": 221,
+      "duration_s": 7.366666666666666,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20walk%203.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad walk 3.mp4",
+        "sha256": "1bb6fc40a10823accdff48ff2e4c36f0b771ba064782b1544e5fb6cf85ee74ee",
+        "bytes": 591070,
+        "published_checksum": "md5:b6d5894ecb14d5d9b9d2f85f675d6811",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-walk-3-overview.jpg",
+      "segments": [
+        {
+          "start_s": 2.5,
+          "end_s": 7.36,
+          "label": "walking"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-walk-14",
+      "source_group_id": "hade-mahad-walk-14",
+      "split": "train",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad walk 14.mp4",
+      "video_sha256": "e4a288cb626db43107657936a5995f65f6f9e16a3b6fe2c196f6a3b8306952d8",
+      "fps": 29.84632070944509,
+      "frame_count": 170,
+      "duration_s": 5.695844444444445,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20walk%2014.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad walk 14.mp4",
+        "sha256": "e4a288cb626db43107657936a5995f65f6f9e16a3b6fe2c196f6a3b8306952d8",
+        "bytes": 1417376,
+        "published_checksum": "md5:a60446cbbe62a2456ad9a4452941b62c",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-walk-14-overview.jpg",
+      "segments": [
+        {
+          "start_s": 0.15,
+          "end_s": 5.69,
+          "label": "walking"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-walk-2",
+      "source_group_id": "hade-mahad-walk-2",
+      "split": "test",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad walk 2.mp4",
+      "video_sha256": "200dae7285b62cd1c5d321b64eba262f1c0e61e83c9d22786b3714e237f01af4",
+      "fps": 30.0,
+      "frame_count": 110,
+      "duration_s": 3.6666666666666665,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20walk%202.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad walk 2.mp4",
+        "sha256": "200dae7285b62cd1c5d321b64eba262f1c0e61e83c9d22786b3714e237f01af4",
+        "bytes": 330204,
+        "published_checksum": "md5:348c480e8b47a8dfb38d643dd41748e7",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-walk-2-overview.jpg",
+      "segments": [
+        {
+          "start_s": 0,
+          "end_s": 3.666,
+          "label": "walking"
+        }
+      ]
+    },
+    {
+      "clip_id": "hade-mahad-walk-15",
+      "source_group_id": "hade-mahad-walk-15",
+      "split": "test",
+      "dataset": "HADE",
+      "video_path": "runs/five-action-20261015/inputs/hade/mahad walk 15.mp4",
+      "video_sha256": "0d29c2104836c32fa4d615b4e5a0c888475216df2210ec93a53eeb6796418e3a",
+      "fps": 29.83244435393368,
+      "frame_count": 153,
+      "duration_s": 5.128644444444444,
+      "source": {
+        "url": "https://zenodo.org/api/records/8223591/files/mahad%20walk%2015.mp4/content",
+        "landing_url": "https://zenodo.org/records/8223591",
+        "path": "runs/five-action-20261015/inputs/hade/mahad walk 15.mp4",
+        "sha256": "0d29c2104836c32fa4d615b4e5a0c888475216df2210ec93a53eeb6796418e3a",
+        "bytes": 1315460,
+        "published_checksum": "md5:d549bb556102f330f9f51d0759653676",
+        "license": "CC BY 4.0"
+      },
+      "derivation": {
+        "kind": "original_video"
+      },
+      "annotation_basis": "Independent coding-agent visual review of unoverlaid original RGB contact sheets (about 0.2 second spacing for sit/rise; 12 evenly spaced frames for walk); the author supplies clip action names but all intervals/background labels here are provisional agent annotations. No model predictions viewed.",
+      "annotation_evidence": "runs/five-action-20261015/annotations/mahad-walk-15-overview.jpg",
+      "segments": [
+        {
+          "start_s": 0.5,
+          "end_s": 5.12,
+          "label": "walking"
+        }
+      ]
+    }
+  ]
+}

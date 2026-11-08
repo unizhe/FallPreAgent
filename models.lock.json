@@ -1,0 +1,17 @@
+{
+  "yolo11n-pose.pt": {
+    "url": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11n-pose.pt",
+    "sha256": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+    "size_bytes": 6255593
+  },
+  "yolo11n.pt": {
+    "url": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11n.pt",
+    "sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+    "size_bytes": 5613764
+  },
+  "yolo26n-pose.pt": {
+    "url": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n-pose.pt",
+    "sha256": "eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9",
+    "size_bytes": 7878574
+  }
+}

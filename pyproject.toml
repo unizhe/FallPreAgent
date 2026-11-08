@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fallpre-agent"
+version = "0.1.0"
+description = "Fixed-camera fall prevention MVP: perception, geometry, temporal rules and agent tools"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "ultralytics==8.4.63",
+  "opencv-python>=4.10,<5",
+  "numpy>=1.26,<3",
+  "scipy>=1.13,<2",
+  "shapely>=2.0,<3",
+  "pydantic>=2.10,<3",
+  "lap>=0.5.12,<0.6",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.12"]
+
+[project.scripts]
+fallpre = "fallpre.cli:main"
+
+[tool.uv.sources]
+ultralytics = { path = "third_party/ultralytics", editable = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fallpre"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+# This host cannot reach files.pythonhosted.org; wheels remain hash-locked in uv.lock.
+[[tool.uv.index]]
+name = "tuna"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true

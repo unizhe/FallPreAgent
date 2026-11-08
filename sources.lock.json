@@ -1,0 +1,17 @@
+{
+  "ultralytics": {
+    "url": "https://github.com/ultralytics/ultralytics.git",
+    "ref": "v8.4.63",
+    "commit": "c9271a4967322f8cab976448f049400dc617e598",
+    "path": "third_party/ultralytics",
+    "role": "runtime editable install; YOLO11 pose/detect and integrated ByteTrack",
+    "license": "AGPL-3.0"
+  },
+  "ByteTrack": {
+    "url": "https://github.com/FoundationVision/ByteTrack.git",
+    "commit": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+    "path": "third_party/ByteTrack",
+    "role": "upstream reference; not a second runtime tracker",
+    "license": "MIT"
+  }
+}

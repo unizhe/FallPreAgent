@@ -1,0 +1,14 @@
+{
+  "schema": "fallpre.action_v2.protocol.v1",
+  "test_sealed_before_v2_training": true,
+  "development": "All v1 clips may be used as train/dev, never advertised as independent v2 test. Existing TUM walking_static is a known regression/development sequence.",
+  "new_fall_train": [5, 6, 7, 8],
+  "new_fall_dev": [9, 10],
+  "new_fall_test": [11, 12, 13, 14, 15, 16],
+  "new_test_rgb": ["urfd-adl-09", "urfd-adl-10", "urfd-adl-17", "urfd-adl-19", "hade-mahad-stand-up-2", "hade-mahad-stand-up-7", "hade-mahad-sit-13", "hade-mahad-walk-1", "hade-mahad-walk-11"],
+  "new_seated_domain_test": "TUM freiburg3_sitting_static first 8 seconds, no overlap with walking_static development source",
+  "labels": "URFD official frame state 0 is falling, 1 is lying/background, -1 is unknown for five-class evaluation but negative for binary falling. Additional action/state intervals are provisional visual annotations, no human adjudication.",
+  "selection": "Train only on train. Checkpoints selected on dev five-action macro F1. Transition thresholds chosen on train/dev only. Freeze model+config hash before any v2 test predictions. Do not tune after test.",
+  "metrics": ["five-class per-class precision recall F1 and coverage including unknown", "official-annotation falling frame recall", "fall event detection overlap and delay; no post-fall-only credit", "seated-to-standing_up false-positive fraction and unknown fraction", "same-test v1 vs v2 comparison", "tracking-only ablation"],
+  "independence_limit": "Source-video disjoint, not established subject/room disjoint. HADE repeated actor remains. Public staged falls are not clinical data."
+}

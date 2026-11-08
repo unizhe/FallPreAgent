@@ -1,0 +1,13 @@
+{
+  "schema": "fallpre.action_v7.protocol.v1",
+  "development": "All V6 train unchanged; all former V6 test now development. V6 mistakes are explicit development examples, never new test.",
+  "new_test_subjects": [
+    7,
+    8,
+    9
+  ],
+  "test_selection": "Telkom both before/after fixed first20s at native clock; source-only labels before action inference.",
+  "selection": "Max rising precision subject to preserving every V5 detected dev event and every V5 true positive window (including telkom-4-after 6.4s); seated false rises cannot exceed V6; walking/bending/falling/sitting_down exactly preserved. If no eligible candidate, report failure rather than tune on new test.",
+  "slow_search": "Prioritize author instructed slow STS with native timestamps; verify continuous pelvis ascent, no pauses or camera scale effects. Report RGB and projected/mocap component evidence separately.",
+  "freeze": "Hash model, manifest, protocol and runtime/evaluation sources before new-person test; no post-test tuning."
+}

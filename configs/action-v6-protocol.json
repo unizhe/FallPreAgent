@@ -1,0 +1,14 @@
+{
+  "schema": "fallpre.action_v6.protocol.v1",
+  "created": "2026-10-19",
+  "development": "All V5 test becomes development; retain old labels and frozen baselines. No V6 predictions on new test until freeze.",
+  "new_test_subjects": [
+    4,
+    5,
+    6
+  ],
+  "test_selection": "Telkom both before/after fixed first20s, native frame clock, labels from source-only contact sheets before prediction.",
+  "slow_search": "Review unused Stanford continuous hip/shoulder ascent at native speed with stable feet and extension; author whole-transition duration alone is insufficient. Additional source access attempts documented.",
+  "selection": "Retain all V5 detected dev rising events, >=99% V5 true positive rising windows overall and within Telkom1/2/3; seated false rise no higher; exact walking,bending,falling parity. Select highest rising precision among eligible candidates, prefer fewer changes on ties.",
+  "freeze": "Hash model, manifest, protocol and inference/evaluation source before new-person test. No post-test tuning."
+}

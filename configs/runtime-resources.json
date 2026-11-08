@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "purpose": "Runtime resource inventory. Does not include personal videos, training sets, or permission to redistribute weights.",
+  "profiles": {
+    "synthetic": [],
+    "camera": [
+      "yolo26n-pose",
+      "action-v7"
+    ],
+    "camera-rgb": [
+      "yolo26n-pose",
+      "action-v7",
+      "yolo11n",
+      "rgb-fall"
+    ],
+    "temporal": [
+      "yolo26n-pose",
+      "action-v7",
+      "yolo11n",
+      "rgb-fall",
+      "stgcn-ntu60",
+      "mmaction-config",
+      "ntu60-labels"
+    ],
+    "perception-chain": [
+      "yolo26n-pose",
+      "action-v7",
+      "yolo11n",
+      "rgb-fall",
+      "stgcn-ntu60",
+      "mmaction-config",
+      "ntu60-labels",
+      "fall-head-c",
+      "fall-head-d"
+    ]
+  },
+  "sources": {
+    "mmaction2": {
+      "path": "third_party/algorithms/mmaction2",
+      "url": "https://github.com/open-mmlab/mmaction2.git",
+      "commit": "a5a167dff2399e2d182a60332325f9c0d4663517",
+      "license": "Apache-2.0",
+      "sparse_paths": [
+        "mmaction",
+        "configs/skeleton/stgcnpp",
+        "configs/_base_",
+        "tools/data/skeleton",
+        "requirements"
+      ]
+    }
+  },
+  "resources": {
+    "yolo26n-pose": {
+      "url": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n-pose.pt",
+      "sha256": "eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9",
+      "size_bytes": 7878574,
+      "path": "models/yolo26n-pose.pt",
+      "kind": "public-weight"
+    },
+    "yolo11n-pose": {
+      "url": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11n-pose.pt",
+      "sha256": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "size_bytes": 6255593,
+      "path": "models/yolo11n-pose.pt",
+      "kind": "public-weight"
+    },
+    "yolo11n": {
+      "url": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11n.pt",
+      "sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "size_bytes": 5613764,
+      "path": "models/yolo11n.pt",
+      "kind": "public-weight"
+    },
+    "rgb-fall": {
+      "path": "models/experimental-fall/kamal-yolov8-fall25.pt",
+      "sha256": "4a7eba2e982955d7c5f2ea65968f23332c123275116e75e2bac915f40ba749e0",
+      "url": "https://huggingface.co/kamalchibrani/yolov8_fall_detection_25/resolve/607a55e0f2a3c056cf1afb82a9a6f8e65a97bc0b/best.pt",
+      "size_bytes": 6210350,
+      "license": "OpenRAIL (author model card); underlying Ultralytics licensing also applies",
+      "source": "https://huggingface.co/kamalchibrani/yolov8_fall_detection_25",
+      "training_overlap": "Unknown: author does not disclose training membership; URFD overlap cannot be excluded.",
+      "kind": "public-weight"
+    },
+    "action-v7": {
+      "path": "models/action-v7/model.json",
+      "legacy_paths": [
+        "runs/action-v7/training/model.json"
+      ],
+      "kind": "team-artifact",
+      "size_bytes": 11488194,
+      "sha256": "f6281a191b3ec3a3de7f649a82b436fa2d4d69d036882fcd85fbc21d85e0169e",
+      "provenance": "Project V7 completion classifier; nested V3–V7 trained artifacts. Transfer the exact verified file separately; no public download is available.",
+      "license_note": "Training source URFD is recorded as CC BY-NC-SA 4.0. Redistribution terms for the derived weights have not been independently verified."
+    },
+    "stgcn-ntu60": {
+      "path": "models/stgcn/stgcnpp-ntu60-2d-joint.pth",
+      "legacy_paths": [
+        "runs/meeting-20261014/models/stgcnpp-ntu60-2d-joint.pth"
+      ],
+      "kind": "public-weight",
+      "size_bytes": 5859545,
+      "sha256": "86e1e77a7b27dd53c6ccc1600a4cc3c321ec8e04d17f25a41fbbb7896026945a",
+      "url": "https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcnpp/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20221228-86e1e77a.pth",
+      "license_note": "MMAction2 source is Apache-2.0; pretrained weight and NTU60 data terms require separate review before redistribution."
+    },
+    "mmaction-config": {
+      "path": "third_party/algorithms/mmaction2/configs/skeleton/stgcnpp/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py",
+      "kind": "source-file",
+      "size_bytes": 3112,
+      "sha256": "31bd05179ebe52ccb9ecb194f2e9e8a804b4765d2172a124b646bdc169fd1c82"
+    },
+    "ntu60-labels": {
+      "path": "third_party/algorithms/mmaction2/tools/data/skeleton/label_map_ntu60.txt",
+      "kind": "source-file",
+      "size_bytes": 1143,
+      "sha256": "4b6fc7042fd3a58e15eb70b8d021e2b6c9b2ca2ca996df2b7e98434189b7f0b5"
+    },
+    "fall-head-c": {
+      "path": "models/fall-heads/head-c-st.npz",
+      "legacy_paths": [
+        "runs/stgcn-fall-20261107/official-dev/head-c-st/fall-process-head.npz"
+      ],
+      "kind": "team-artifact",
+      "size_bytes": 4887,
+      "sha256": "77f78dfb9fcf21a6ca259819c40d59cd416b8233601b071f883eb5f92089e3f2",
+      "provenance": "Experimental URFD weak-label development binary process head; not an approved alarm policy. Transfer exact verified artifact separately.",
+      "license_note": "URFD source is recorded as CC BY-NC-SA 4.0; derived weight redistribution terms have not been independently verified."
+    },
+    "fall-head-d": {
+      "path": "models/fall-heads/head-d-geometry.npz",
+      "legacy_paths": [
+        "runs/stgcn-fall-20261107/official-dev/head-d-geometry/fall-process-head.npz"
+      ],
+      "kind": "team-artifact",
+      "size_bytes": 5201,
+      "sha256": "bac2e1502004e9eee79816b61a2f8c2b294deaac66c30e796ffd51bb9ddb6270",
+      "provenance": "Experimental URFD weak-label development binary process head; not an approved alarm policy. Transfer exact verified artifact separately.",
+      "license_note": "URFD source is recorded as CC BY-NC-SA 4.0; derived weight redistribution terms have not been independently verified."
+    }
+  }
+}

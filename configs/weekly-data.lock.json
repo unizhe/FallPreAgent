@@ -1,0 +1,36 @@
+{
+  "source_page": "https://fenix.ur.edu.pl/~mkepski/ds/uf.html",
+  "license": "CC BY-NC-SA 4.0; non-commercial academic research",
+  "sampling": "all frames; no temporal subsampling",
+  "clock": "official synchronization CSV milliseconds / 1000; never frame index / FPS",
+  "clips": {
+    "adl-01": {
+      "assets": {
+        "rgb": {
+          "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-01-cam0-rgb.zip",
+          "sha256": "a3d51bbc71cfd06899f541f46277699d72503465f02397f91b705cf36aa2c627",
+          "bytes": 69079050
+        },
+        "sync": {
+          "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/adl-01-data.csv",
+          "sha256": "218bedf426ee8434a05999f1c0f8b718f493a14ccc95dda429278b471b211dc9",
+          "bytes": 1358
+        }
+      }
+    },
+    "fall-01": {
+      "assets": {
+        "rgb": {
+          "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/fall-01-cam0-rgb.zip",
+          "sha256": "e5ff96108d322d7fe5ba6871a4c50d9c26c59e74abea03d2b69b6be56521736f",
+          "bytes": 57727213
+        },
+        "sync": {
+          "url": "https://fenix.ur.edu.pl/~mkepski/ds/data/fall-01-data.csv",
+          "sha256": "60e156223725e401155b4fd25a672c498ed5b4e17897337c6971d90041818bcc",
+          "bytes": 2466
+        }
+      }
+    }
+  }
+}

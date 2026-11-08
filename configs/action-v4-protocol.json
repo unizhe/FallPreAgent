@@ -1,0 +1,38 @@
+{
+  "schema": "fallpre.action_v4.protocol.v1",
+  "date": "2026-10-19 Asia/Shanghai",
+  "objective": "Causal seated -> forward_lean -> rising -> standing phase model; maintain V3 ordinary actions and frozen fall branch.",
+  "legacy": "All V3 data including subject10 and former test clips are development/regression only. Never call them new independent test.",
+  "new_source": "doi:10.34820/FK2/VAEGNR (Telkom STS public videos, CC0)",
+  "split": {
+    "train_subjects": [
+      11,
+      12
+    ],
+    "dev_subjects": [
+      13
+    ],
+    "test_subjects": [
+      14,
+      15
+    ]
+  },
+  "selection": "Both before/after recordings, first 20 seconds or full clip if shorter. Fixed before action-model inference. No crops based on predicted success. Retain video-native frame clock. All variants/repetitions for a subject share split.",
+  "annotations": "Agent visual phase intervals from publisher videos before V4 inference. Provisional, no independent human adjudicator. Seated and standing are background; visible forward-lean is preparatory only, report separately; rising is observable lift/extension, not force-plate seat-off ground truth. Preserve original V3 official labels for regression separately.",
+  "training_augmentation": "Train-only time dilation 1.5x/2x, clearly synthetic speed augmentation, not new real slow subjects or independent test. New side-view plus existing frontal/oblique sources; no angle-disjoint claim.",
+  "selection_rule": "Development candidates must have zero sampled seated false rises; among them choose maximum rising F1. Protected walk/bend/fall decisions unchanged. Final full source-clock regression before freeze. No test-based tuning.",
+  "metrics": [
+    "new standing_up P/R/F1, unknown as error",
+    "seated/forward-lean false rising",
+    "phase confusion",
+    "event hit and causal delay",
+    "V3 original five-action regression and subject10",
+    "matched V3/V4 outputs"
+  ],
+  "limits": "New independent set has two unseen people, common side-view setup, publisher segmentation/pose overlays. It is not a five-class benchmark. Other actions are regression-only. Clinical slow-rise ground truth unavailable; report observed durations and augmentation separately.",
+  "slow_data_acquisition": {
+    "source": "https://doi.org/10.5523/bris.21h9f9e30v9cl2fapjggz4q1x7",
+    "status": "Official metadata/index accessible, public file downloads return curl52 empty replies via HTTPS, direct and HTTP; not included.",
+    "current_slow_coverage": "Train-only temporal dilation, not real slow-subject supplementation."
+  }
+}

@@ -1,0 +1,487 @@
+{
+  "schema_version": 1,
+  "manifest_version": "algorithm-assets-2026-10-14-v1",
+  "collected_date_local": "2026-10-14",
+  "timezone": "Asia/Shanghai",
+  "scope": "Official source-code collection only; no neural inference, model downloads, dataset downloads or production src changes",
+  "baseline_manifest": "sources.lock.json",
+  "assets": [
+    {
+      "asset_id": "stgcnpp-ntu60-coco17-2d-joint",
+      "official_repository": "https://github.com/open-mmlab/mmaction2",
+      "algorithm_scope": "Skeleton sequence action classification; first joint-stream ST-GCN++ candidate",
+      "code_license": {
+        "declared_id": "Apache-2.0",
+        "declaration_path": "LICENSE",
+        "statement_scope": "repository code; audit bundled/optional dependencies separately"
+      },
+      "model_config": "configs/skeleton/stgcnpp/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py",
+      "label_map": "tools/data/skeleton/label_map_ntu60.txt",
+      "weight_assets": [
+        {
+          "url": "https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcnpp/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20221228-86e1e77a.pth",
+          "entry_type": "direct_checkpoint",
+          "upstream_evidence": "configs/skeleton/stgcnpp/README.md",
+          "verification": "HTTP HEAD 200; body not downloaded",
+          "reported_size_bytes": 5859545,
+          "sha256": null,
+          "license_verification": "not separately audited; no inference from code licence"
+        }
+      ],
+      "data_requirements": [
+        "Inference: a coherent target track in COCO-17 order, keypoint tensor (M,T,17,2), confidence (M,T,17), original image shape and total frames",
+        "Official config: PreNormalize2D, joint features, UniformSampleFrames clip_len=100, num_person=2; test num_clips=10",
+        "100 sampled frames is not a fixed-duration online window; causal window and event timing need an independent adapter",
+        "Training/evaluation use data/skeleton/ntu60_2d.pkl and subject-based split; NTU dataset access and terms not downloaded or audited here"
+      ],
+      "environment_requirements": [
+        "mmcv>=2.0.0rc4,<2.2.0",
+        "mmengine>=0.7.1,<1.0.0",
+        "PyTorch and optional dependencies per collected requirements; not installed by this task"
+      ],
+      "known_gaps": [
+        "No project-domain training or independent validation",
+        "Official inference_skeleton uses frame-local person array indices, not a tracker",
+        "Generic NTU labels do not provide all V0.4 behaviours or event boundaries"
+      ],
+      "core_files": [
+        {
+          "path": "LICENSE",
+          "size_bytes": 11400,
+          "sha256": "02c5c55e19772184872c6c455553b15e4acac4b3a757550e7374f47723868ce1"
+        },
+        {
+          "path": "README.md",
+          "size_bytes": 25956,
+          "sha256": "6d7610a4c339d1b04a31b34c62e1d5796c1eb1207c2430c6bf977798434fc7ff"
+        },
+        {
+          "path": "requirements/mminstall.txt",
+          "size_bytes": 45,
+          "sha256": "78532ea49e2ab46a89451b13ced5bc4355c9983055d8e2c04faa45c710abb4b4"
+        },
+        {
+          "path": "requirements.txt",
+          "size_bytes": 81,
+          "sha256": "8f54822499a39a0f79e9b8d876cd08870f24f37bc7b2ec3f99be8368f94b7e6b"
+        },
+        {
+          "path": "setup.py",
+          "size_bytes": 7341,
+          "sha256": "74d21f8c46da343cf380f5bc68e26802786bfaee2f049bc33a4ccf4a4b7d848f"
+        },
+        {
+          "path": "mmaction/__init__.py",
+          "size_bytes": 957,
+          "sha256": "d74ca96de8ff0a90a79f3061cd20db869bc35d55993921c390ead2b0118cdec5"
+        },
+        {
+          "path": "mmaction/models/backbones/stgcn.py",
+          "size_bytes": 8906,
+          "sha256": "ba41dadfe46e49438491d5591a00bc37b2574b6be2d2865b49436b1125ea1167"
+        },
+        {
+          "path": "mmaction/models/utils/gcn_utils.py",
+          "size_bytes": 16041,
+          "sha256": "7cad526f9cf1e96bbb00210263c985f189ad3d096880ad49f420f91cf4543e2a"
+        },
+        {
+          "path": "mmaction/models/utils/graph.py",
+          "size_bytes": 7536,
+          "sha256": "e85731bc50480570c1ffa2473a3221eec4ac040f03e1ed7bec8acda221333d93"
+        },
+        {
+          "path": "mmaction/models/recognizers/recognizer_gcn.py",
+          "size_bytes": 1425,
+          "sha256": "4fca531af894dfdb3b7d8c090f8b2964ae7384c766840edf79f402fa41822bd0"
+        },
+        {
+          "path": "mmaction/models/heads/gcn_head.py",
+          "size_bytes": 2279,
+          "sha256": "a077c9ab4ece0b51deb5c8b456a9c4d184e092b36f2bfd6be9bee63cba9ca815"
+        },
+        {
+          "path": "mmaction/datasets/transforms/pose_transforms.py",
+          "size_bytes": 54365,
+          "sha256": "0fcaeb0a3a199216b2ea8a14a4f50e092ddffcaa346712724d678546d3c6c344"
+        },
+        {
+          "path": "mmaction/apis/inference.py",
+          "size_bytes": 11808,
+          "sha256": "ec3f8621684c91eca03e120dc7957cbff2a768d3448f3fb30a6d1216c0b38437"
+        },
+        {
+          "path": "configs/_base_/default_runtime.py",
+          "size_bytes": 813,
+          "sha256": "2fc41b80935384afa11e3c29620c18bee393230375f3e4fc12aa6c4bf2f2ab7d"
+        },
+        {
+          "path": "configs/skeleton/stgcnpp/README.md",
+          "size_bytes": 10022,
+          "sha256": "511e5cad254869cef19696db5ae7200d59af8b1a2a9768d44f4ffeef472a70de"
+        },
+        {
+          "path": "configs/skeleton/stgcnpp/stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py",
+          "size_bytes": 3112,
+          "sha256": "31bd05179ebe52ccb9ecb194f2e9e8a804b4765d2172a124b646bdc169fd1c82"
+        },
+        {
+          "path": "tools/data/skeleton/label_map_ntu60.txt",
+          "size_bytes": 1143,
+          "sha256": "4b6fc7042fd3a58e15eb70b8d021e2b6c9b2ca2ca996df2b7e98434189b7f0b5"
+        },
+        {
+          "path": "tools/train.py",
+          "size_bytes": 4762,
+          "sha256": "fc6fd5931fbe623358ae65a64f3580a4cc9587e07dd01bffc95cc7d0ae58ad72"
+        },
+        {
+          "path": "tools/test.py",
+          "size_bytes": 4488,
+          "sha256": "95b5105cc9d209c01025204cb08f91035be3ff88fdac8e8871438529437155ac"
+        }
+      ],
+      "local_path": "third_party/algorithms/mmaction2",
+      "git_commit": "a5a167dff2399e2d182a60332325f9c0d4663517",
+      "source_commit_time": "2026-03-18T12:04:49+08:00",
+      "git_tree": "c465611c46275e77b254b4e466dde642541a5ff7",
+      "checkout_kind": "shallow filtered sparse clone; detached HEAD",
+      "checkout_clean": true,
+      "sparse_patterns": [
+        "/*",
+        "!/*/",
+        "/mmaction/",
+        "/configs/_base_/",
+        "/configs/skeleton/stgcnpp/",
+        "/requirements/",
+        "/tools/data/skeleton/",
+        "/demo/demo_skeleton.py",
+        "/demo/demo_skeleton_direct.py",
+        "/tools/train.py",
+        "/tools/test.py"
+      ],
+      "checkout_file_count": 301,
+      "checkout_size_bytes": 2776739,
+      "file_inventory_path": "third_party/algorithms/manifests/mmaction2.files.2026-10-14.v1.json",
+      "file_inventory_sha256": "9fd1996a7b2993efd7a7aec1a4cdcd44537833ae0a338dde1c1135c84446a007",
+      "core_file_permalink_root": "https://github.com/open-mmlab/mmaction2/blob/a5a167dff2399e2d182a60332325f9c0d4663517/",
+      "status": {
+        "source_collected": true,
+        "configuration_inspected": true,
+        "weights_downloaded": false,
+        "runtime_environment_installed": false,
+        "model_executed_locally": false,
+        "target_scene_validated": false
+      },
+      "reproduce": {
+        "clone_url": "https://github.com/open-mmlab/mmaction2.git",
+        "checkout_commit": "a5a167dff2399e2d182a60332325f9c0d4663517",
+        "sparse_patterns_field": "sparse_patterns",
+        "note": "Restore the recorded commit and sparse patterns; verify core file SHA256. No installation or inference was performed."
+      }
+    },
+    {
+      "asset_id": "homofusion-puddle1000",
+      "official_repository": "https://github.com/ShanWang-Shan/HomoFusion",
+      "algorithm_scope": "Camera-geometry-guided temporal image fusion for visible puddle segmentation",
+      "code_license": {
+        "declared_id": "LicenseRef-CSIRO-NonCommercial-Research",
+        "declaration_path": "LICENSE",
+        "statement_scope": "custom CSIRO licence declares non-commercial scientific research/education/research purposes; third-party materials can have separate terms"
+      },
+      "model_config": "config/experiment/homof_hazard_water.yaml",
+      "weight_assets": [
+        {
+          "url": "https://drive.google.com/drive/folders/1URGw0upk_lnebolL_ugFKt8lFbc_A8mI?usp=sharing",
+          "entry_type": "checkpoint_folder",
+          "upstream_evidence": "README.md",
+          "verification": "official README entry recorded; individual checkpoint access/name/hash not verified",
+          "sha256": null,
+          "license_verification": "individual checkpoint terms not audited"
+        }
+      ],
+      "dataset_assets": [
+        {
+          "name": "Puddle-1000",
+          "url": "https://anu365-my.sharepoint.com/my?id=%2Fpersonal%2Fu7094434%5Fanu%5Fedu%5Fau%2FDocuments%2Fwater%5Fhazard",
+          "verification": "official README entry recorded; dataset not downloaded; data licence not audited"
+        }
+      ],
+      "data_requirements": [
+        "Temporal road imagery, camera intrinsics/extrinsics and camera pose/timestamp files used by the published loader",
+        "Water config: top crop 0.5, network image 240x320, sequence_cnt=8, camera_height=1.77; not transferable calibration constants for home cameras",
+        "Loader expects camera_pose and splits/water_hazard files; training/evaluation additionally require puddle masks"
+      ],
+      "environment_requirements": [
+        "README Python 3.8 and CUDA setup",
+        "Pinned torch 1.11.0, torchvision 0.12.0, hydra-core 1.1.1, pytorch-lightning 1.6.2 and collected requirements.txt; not installed"
+      ],
+      "known_gaps": [
+        "Water experiment overrides model: deform_homot but config/model/deform_homot.yaml is absent from the pinned Git tree",
+        "water_hazard_dataset.py imports .common and .transforms, but corresponding Python source files are absent from the pinned Git tree; tracked bytecode is not a source replacement",
+        "homo_transformer/data/__init__.py registers only apolloscape, not water_hazard",
+        "Loader expects splits/water_hazard; directory is absent from pinned Git tree and external split files must be supplied",
+        "benchmark_val.py has placeholder checkpoint path, defaults to cuda and calls torch.cuda.synchronize",
+        "No indoor thin-film/oil/reflection validation; output is visible mask, not friction"
+      ],
+      "core_files": [
+        {
+          "path": "LICENSE",
+          "size_bytes": 2248,
+          "sha256": "f0f656582fd5590058e10907d30acb6d60dcf657984126ca60b4d04ceb7ae520"
+        },
+        {
+          "path": "README.md",
+          "size_bytes": 5122,
+          "sha256": "df92455f0f7a1e90a210d46b22933bfdcf7836b21a75a0248f0b6b8c9e3669c6"
+        },
+        {
+          "path": "requirements.txt",
+          "size_bytes": 276,
+          "sha256": "8c29dc52e513728b85b0828c170b323b1ca5a246e8707e1c5e48264fd7ca16d7"
+        },
+        {
+          "path": "setup.py",
+          "size_bytes": 394,
+          "sha256": "2cc6d4e5d0e5d3244e9f865b9dc7856f8f8a19f216e55e86bb789604d9297b51"
+        },
+        {
+          "path": "config/config.yaml",
+          "size_bytes": 1209,
+          "sha256": "e7d8396d7d5736618c2b480efce1285366f0234fc5527cba73c3f842554696ed"
+        },
+        {
+          "path": "config/model/homofusion.yaml",
+          "size_bytes": 1012,
+          "sha256": "7a108c48da5c3e5863cc54e2457198b0fe11bae897427dd132666b8c2dbd3919"
+        },
+        {
+          "path": "config/experiment/homof_hazard_water.yaml",
+          "size_bytes": 221,
+          "sha256": "eb607974c1a6f1390cccff6b294d18ff32a5a2e2e32ab3f8090ca3e3c1094a25"
+        },
+        {
+          "path": "config/data/water_hazard.yaml",
+          "size_bytes": 853,
+          "sha256": "94f83501becfb4d8c2ed6d0f5b479d8b0e628baf96a5def8307e3d06cff80d38"
+        },
+        {
+          "path": "config/data/water_hazard_water.yaml",
+          "size_bytes": 118,
+          "sha256": "570ea1359391e27b3a616f71f874a2af6130b3cf33c9b44994f6c7e5916f1122"
+        },
+        {
+          "path": "homo_transformer/data/__init__.py",
+          "size_bytes": 155,
+          "sha256": "ef8ce3c7b08b028f94ce5861eca2c41fdf90948c0bfd8c5a172cc402f28d3f4e"
+        },
+        {
+          "path": "homo_transformer/data/water_hazard_dataset.py",
+          "size_bytes": 11778,
+          "sha256": "26815b38361a707b11ebad809e3c4c527aa0cafbb728b844eb25850fbdf1667c"
+        },
+        {
+          "path": "homo_transformer/data/water_hazard/SN1994.conf",
+          "size_bytes": 936,
+          "sha256": "72f99b75cbb2083f4a4b5bd645519feccd13853118acc9dd9d17c72df0db937e"
+        },
+        {
+          "path": "homo_transformer/model/homot.py",
+          "size_bytes": 1011,
+          "sha256": "bd259609f6f38e1796f732882c2bc8c6b81a785634194340defd2feede9222f2"
+        },
+        {
+          "path": "homo_transformer/model/homo_guide_encoder.py",
+          "size_bytes": 20232,
+          "sha256": "c3f0c094470d2c8869877cd3c0f429a25b884b6f12c8af976a9a3c68a8e73a41"
+        },
+        {
+          "path": "scripts/benchmark_val.py",
+          "size_bytes": 3014,
+          "sha256": "435e46f28de8e9361e5865b7b11e191e09c2822903a7c03443cc876e053df885"
+        },
+        {
+          "path": "scripts/train.py",
+          "size_bytes": 2574,
+          "sha256": "06d48732e9c95d3f5d7e758cd486c1b168ff1a730199678fadaa3706a78a202f"
+        }
+      ],
+      "local_path": "third_party/algorithms/HomoFusion",
+      "git_commit": "bf647ed1e6fe28f2e046a5c51c87045626f989ed",
+      "source_commit_time": "2024-10-13T11:30:42+11:00",
+      "git_tree": "bf19133f4d67f8982d94ad963277194be622e111",
+      "checkout_kind": "shallow filtered sparse clone; detached HEAD",
+      "checkout_clean": true,
+      "sparse_patterns": [
+        "/*",
+        "!/*/",
+        "/config/",
+        "/homo_transformer/",
+        "/scripts/",
+        "!**/__pycache__/",
+        "!/task.png"
+      ],
+      "checkout_file_count": 44,
+      "checkout_size_bytes": 220859,
+      "file_inventory_path": "third_party/algorithms/manifests/HomoFusion.files.2026-10-14.v1.json",
+      "file_inventory_sha256": "a9efc9c47ee1aacb70e94ccc91bde64e1b0737b8592f886e0cfacc3aac774658",
+      "core_file_permalink_root": "https://github.com/ShanWang-Shan/HomoFusion/blob/bf647ed1e6fe28f2e046a5c51c87045626f989ed/",
+      "status": {
+        "source_collected": true,
+        "configuration_inspected": true,
+        "weights_downloaded": false,
+        "runtime_environment_installed": false,
+        "model_executed_locally": false,
+        "target_scene_validated": false
+      },
+      "reproduce": {
+        "clone_url": "https://github.com/ShanWang-Shan/HomoFusion.git",
+        "checkout_commit": "bf647ed1e6fe28f2e046a5c51c87045626f989ed",
+        "sparse_patterns_field": "sparse_patterns",
+        "note": "Restore the recorded commit and sparse patterns; verify core file SHA256. No installation or inference was performed."
+      }
+    },
+    {
+      "asset_id": "stairnet-depthout-rgb",
+      "official_repository": "https://github.com/MrChenWang/StairNet-DepthOut",
+      "algorithm_scope": "RGB stair-line/region detection, not measured metric stair height",
+      "code_license": {
+        "declared_id": "CC-BY-NC-3.0",
+        "declaration_path": "README.md",
+        "statement_scope": "README License section; no standalone LICENSE file in pinned Git tree"
+      },
+      "model_config": "config.py",
+      "weight_assets": [
+        {
+          "url": "https://pan.baidu.com/s/188apXRxnRHdAkQcK5CwoBA?pwd=l03t",
+          "entry_type": "checkpoint_folder",
+          "upstream_evidence": "README.md",
+          "variants": [
+            "1.0",
+            "0.75",
+            "0.5"
+          ],
+          "verification": "official README entry recorded; individual checkpoint access/name/hash not verified",
+          "sha256": null,
+          "license_verification": "individual checkpoint terms not separately audited"
+        }
+      ],
+      "dataset_assets": [
+        {
+          "name": "RGB-D stair dataset",
+          "url": "https://data.mendeley.com/datasets/6kffmjt7g2/1",
+          "verification": "official README entry recorded; dataset not downloaded; data licence not audited"
+        }
+      ],
+      "data_requirements": [
+        "Network forward takes only normalized RGB at 512x512",
+        "Published file loader still requires equally many readable RGB and depth images; model(x) does not consume depth",
+        "Training loader uses paired RGB/depth with transferred stair-line labels; dataset README reports 2276 train and 556 validation image pairs"
+      ],
+      "environment_requirements": [
+        "README Python 3.7; torch 1.7.0+cu110; torchvision 0.8.0+cu110; OpenCV, tqdm",
+        "config.py hard-codes cuda:0; CPU/current platform adaptation not attempted"
+      ],
+      "known_gaps": [
+        "detect.py camera branches source=0/1 are TODO and do not construct dataset",
+        "RGB-only loader and device configuration must be adapted before ordinary single-camera demo",
+        "detect.py deletes its configured output directory before inference; invoke only via controlled wrapper during later reproduction",
+        "No fixed elevated indoor-camera, threshold or metric height validation"
+      ],
+      "core_files": [
+        {
+          "path": "README.md",
+          "size_bytes": 4092,
+          "sha256": "e992a3371cbf011f6b841fac976a618520326f5c2643d4e6f421099149171ffa"
+        },
+        {
+          "path": "config.py",
+          "size_bytes": 118,
+          "sha256": "12dc546a73c3a08488f2df580ef9ed513a7f4265f6bc7cdf205817c6436afdfb"
+        },
+        {
+          "path": "dataset.py",
+          "size_bytes": 5676,
+          "sha256": "9056c209b69322b7f5537fd535720a6b16a8c98d9f6692b4cbbe40767646a4e3"
+        },
+        {
+          "path": "detect.py",
+          "size_bytes": 6519,
+          "sha256": "92c5254b097cd006d126fcab4b46881534f1ddf02b8b6d252b674636d03b12e5"
+        },
+        {
+          "path": "label_transfer.py",
+          "size_bytes": 10344,
+          "sha256": "74e2dd080cb52c024fbf19dbe0760fa504a434b8966bbf12714b883b78ea8bd6"
+        },
+        {
+          "path": "loss.py",
+          "size_bytes": 5531,
+          "sha256": "d896093e6f11e58420e0434642948e7c65617ed41902d4ecd51285df88844021"
+        },
+        {
+          "path": "train.py",
+          "size_bytes": 14846,
+          "sha256": "5ec3c6ec1fb24753d62fea213cc3e573015b74c931db6f88ee4e48d1d8e04b15"
+        },
+        {
+          "path": "utils.py",
+          "size_bytes": 3701,
+          "sha256": "a6e7ecdffef20542f3675784db9d8cfbf6b26a5369c98faeaaa17604225020ae"
+        },
+        {
+          "path": "nets/NetV3.py",
+          "size_bytes": 10738,
+          "sha256": "abae194234d3431785a4900cba35178c966f089a787d06b11f75943715c20846"
+        },
+        {
+          "path": "nets/modules.py",
+          "size_bytes": 9360,
+          "sha256": "b7ecaa8320660af309a8a409c6fb03dbf9c8a40f9bcaab867d96e6ce80d877a3"
+        },
+        {
+          "path": "data/README.md",
+          "size_bytes": 57,
+          "sha256": "df92fe64fa63991cca6cd5758892648f628d7a971e49e61ea78be4fb55968da7"
+        },
+        {
+          "path": "inference/README.md",
+          "size_bytes": 39,
+          "sha256": "6fe0facad4c8c19defb6072625d9066411ce55620df512f3ff837f389793fea1"
+        }
+      ],
+      "local_path": "third_party/algorithms/StairNet-DepthOut",
+      "git_commit": "29457b107e03d8e1aca22fe787f0f66787ab7b3d",
+      "source_commit_time": "2024-08-15T14:04:47+08:00",
+      "git_tree": "43b55bb4144d1c9b6b5c6034650bf63dfb0cba83",
+      "checkout_kind": "shallow filtered sparse clone; detached HEAD",
+      "checkout_clean": true,
+      "sparse_patterns": [
+        "/*",
+        "!/*/",
+        "/nets/*.py",
+        "/data/README.md",
+        "/inference/README.md"
+      ],
+      "checkout_file_count": 12,
+      "checkout_size_bytes": 71021,
+      "file_inventory_path": "third_party/algorithms/manifests/StairNet-DepthOut.files.2026-10-14.v1.json",
+      "file_inventory_sha256": "1260c1f1540a6b3bd35ac63eece0bc43bca971efcbae78d3e41a680f3fab8eee",
+      "core_file_permalink_root": "https://github.com/MrChenWang/StairNet-DepthOut/blob/29457b107e03d8e1aca22fe787f0f66787ab7b3d/",
+      "status": {
+        "source_collected": true,
+        "configuration_inspected": true,
+        "weights_downloaded": false,
+        "runtime_environment_installed": false,
+        "model_executed_locally": false,
+        "target_scene_validated": false
+      },
+      "reproduce": {
+        "clone_url": "https://github.com/MrChenWang/StairNet-DepthOut.git",
+        "checkout_commit": "29457b107e03d8e1aca22fe787f0f66787ab7b3d",
+        "sparse_patterns_field": "sparse_patterns",
+        "note": "Restore the recorded commit and sparse patterns; verify core file SHA256. No installation or inference was performed."
+      }
+    }
+  ]
+}

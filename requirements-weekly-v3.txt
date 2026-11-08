@@ -1,0 +1,4 @@
+# Additional training-only dependency; JSON forest inference does not need sklearn.
+scikit-learn==1.7.2
+joblib==1.6.0
+threadpoolctl==3.7.0

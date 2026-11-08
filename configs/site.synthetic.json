@@ -1,0 +1,152 @@
+{
+  "site_id": "synthetic_only",
+  "scene_version": "synthetic-v1",
+  "person_id": "test_person_01",
+  "binding_id": "manual_binding_01",
+  "image_size": [
+    640,
+    480
+  ],
+  "calibration_id": "synthetic-h01",
+  "homography": [
+    [
+      0.01,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.01,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "floor_polygon_px": [
+    [
+      20.0,
+      100.0
+    ],
+    [
+      620.0,
+      100.0
+    ],
+    [
+      620.0,
+      470.0
+    ],
+    [
+      20.0,
+      470.0
+    ]
+  ],
+  "validation_error_m": 0.001,
+  "calibration_validated": true,
+  "calibration_image_points": [
+    [
+      50.0,
+      150.0
+    ],
+    [
+      300.0,
+      150.0
+    ],
+    [
+      590.0,
+      150.0
+    ],
+    [
+      50.0,
+      450.0
+    ],
+    [
+      300.0,
+      450.0
+    ],
+    [
+      590.0,
+      450.0
+    ]
+  ],
+  "calibration_world_points": [
+    [
+      0.5,
+      1.5
+    ],
+    [
+      3.0,
+      1.5
+    ],
+    [
+      5.9,
+      1.5
+    ],
+    [
+      0.5,
+      4.5
+    ],
+    [
+      3.0,
+      4.5
+    ],
+    [
+      5.9,
+      4.5
+    ]
+  ],
+  "validation_image_points": [
+    [
+      150.0,
+      250.0
+    ],
+    [
+      450.0,
+      350.0
+    ]
+  ],
+  "validation_world_points": [
+    [
+      1.5,
+      2.5
+    ],
+    [
+      4.5,
+      3.5
+    ]
+  ],
+  "camera_matrix": null,
+  "distortion_coefficients": null,
+  "footpoint_error_m": 0.05,
+  "obstacle_id": "registered_backpack_01",
+  "obstacle_footprint_m": [
+    [
+      4.0,
+      4.1
+    ],
+    [
+      4.5,
+      4.1
+    ],
+    [
+      4.5,
+      4.5
+    ],
+    [
+      4.0,
+      4.5
+    ]
+  ],
+  "obstacle_anchor_bbox_px": [
+    400.0,
+    370.0,
+    450.0,
+    450.0
+  ],
+  "footprint_version": "synthetic-footprint-01",
+  "background_reference": null,
+  "background_roi_px": [],
+  "synthetic": true
+}

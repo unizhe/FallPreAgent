@@ -1,0 +1,5 @@
+# Add-on environment for the public-data demos. The original uv.lock is unchanged.
+# Install after the base project: uv pip install --python .venv/bin/python -r requirements-weekly.txt
+transformers==4.57.1
+h5py>=3.11,<4
+remotezip==0.12.3
