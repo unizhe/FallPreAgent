@@ -1,8 +1,4 @@
-"""Provider-neutral entrypoint for a single Agent's tool calls.
-
-The deterministic fast loop belongs to MVPService and does not wait for an LLM.
-A future model client can use describe_tools()/invoke() without importing YOLO.
-"""
+"""Provider-neutral tool entrypoint for the legacy MVP and CareLoop backends."""
 from __future__ import annotations
 
 
@@ -17,4 +13,12 @@ class FallPreventionAgent:
         return self.service.tools.call(name, arguments)
 
     def inspect_person(self, person_id: str) -> dict:
+        """Query the legacy MVPService person tool."""
         return self.invoke("get_realtime_state", {"person_id": person_id, "max_age_ms": 500})
+
+    def observe(self, session_id: str, perception: dict) -> dict:
+        """Drive the event bridge when configured with CareLoop."""
+        observe = getattr(self.service, "observe", None)
+        if observe is None:
+            raise TypeError("Perception messages require a CareLoop backend")
+        return observe(session_id, perception)

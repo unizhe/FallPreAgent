@@ -32,6 +32,16 @@
       "ntu60-labels",
       "fall-head-c",
       "fall-head-d"
+    ],
+    "tail-shadow": [
+      "yolo26n-pose",
+      "action-v7",
+      "yolo11n",
+      "rgb-fall",
+      "stgcn-ntu60",
+      "mmaction-config",
+      "ntu60-labels",
+      "fall-head-tail-joint"
     ]
   },
   "sources": {
@@ -89,7 +99,7 @@
       "kind": "team-artifact",
       "size_bytes": 11488194,
       "sha256": "f6281a191b3ec3a3de7f649a82b436fa2d4d69d036882fcd85fbc21d85e0169e",
-      "provenance": "Project V7 completion classifier; nested V3–V7 trained artifacts. Transfer the exact verified file separately; no public download is available.",
+      "provenance": "Project V7 completion classifier; nested V3\u2013V7 trained artifacts. Transfer the exact verified file separately; no public download is available.",
       "license_note": "Training source URFD is recorded as CC BY-NC-SA 4.0. Redistribution terms for the derived weights have not been independently verified."
     },
     "stgcn-ntu60": {
@@ -136,6 +146,19 @@
       "sha256": "bac2e1502004e9eee79816b61a2f8c2b294deaac66c30e796ffd51bb9ddb6270",
       "provenance": "Experimental URFD weak-label development binary process head; not an approved alarm policy. Transfer exact verified artifact separately.",
       "license_note": "URFD source is recorded as CC BY-NC-SA 4.0; derived weight redistribution terms have not been independently verified."
+    },
+    "fall-head-tail-joint": {
+      "path": "models/fall-heads/tail-joint-fold-03.pt",
+      "legacy_paths": [
+        "runs/early-window-diagnosis-20261110/heads/process21/tail_joint/17/fold-03.pt"
+      ],
+      "kind": "team-artifact",
+      "size_bytes": 7517,
+      "sha256": "d97f2c47397172b22477704789fe3b131eaf76592945ae8d0352477af9657996",
+      "provenance": "process21/tail_joint, seed 17, fold-03; development camera checkpoint for shadow comparison.",
+      "development_heldout_group": "capture-day-2026-11-08",
+      "feature_schema": "286 float features: 256 frozen ST-GCN++ channels pooled over the last 8 of 25 backbone steps and joints; then 30 geometry values in three chronological segments, columns 4,5,8,9,10,11,12,13,15,16 per segment.",
+      "license_note": "Obtain through the project maintainer subject to data and derived weight terms. This file is excluded from source distribution."
     }
   }
 }

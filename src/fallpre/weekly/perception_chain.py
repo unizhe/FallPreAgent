@@ -12,6 +12,7 @@ import numpy as np
 from fallpre.runtime_resources import resource_path
 
 from .fall_event_fusion import TemporalFallEventFusion
+from .perception_semantics import decision_context
 from .stgcn_fall_evidence import FallTemporalEvidence, _box, _iou, fall_geometry_features
 from .stgcn_fall_head import predict_fall_head
 from .stgcn_fusion import ConstrainedSTGCNFusion
@@ -130,6 +131,7 @@ class PerceptionChain:
             color = 'red' if f['state'] == 'confirmed' else 'yellow'
             box = event['observation']['person']['box']
         return dict(schema_version=1, stream_id=self.stream_id, source_time_s=t,
+                    decision_context=decision_context(r, t, fall=f, observation=event['observation']),
                     identity=dict(action_epoch=a.get('selection', {}).get('target_epoch'),
                                   generation=state['generation']),
                     observation=dict(observable=observable, code=state['status'],

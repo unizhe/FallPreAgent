@@ -26,7 +26,7 @@
 
 ### 最小可分享回归：无需本地实验数据
 
-推荐一次运行完整的可分享测试组：`python scripts/check_portable.py`。它包含下面的合同回归、时间窗口、资源管理与源码交接测试；加 `--with-ui` 可运行无需浏览器的 Node 录制测试。
+推荐一次运行完整的可分享测试组：`python scripts/check_portable.py`。它包含合同回归、时间窗口、二分类证据、观测语义、持久事件和单 Agent 闭环，以及资源管理与源码交接测试；加 `--with-ui` 可运行无需浏览器的 Node 录制测试。
 
 ```bash
 python -m pytest -q \

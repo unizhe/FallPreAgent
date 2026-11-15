@@ -933,3 +933,86 @@ test('v19 reference restart is disabled during recordings and video replay', asy
  await h.run('resetView();');
  assert.equal(h.fetches.length,0);
 });
+
+function decisionContext(overrides={}) {
+ return {schema_version:1,source_time_s:12,pose_observation_status:'observable',
+  event_identity_status:'current',fall_evidence_status:'unresolved',text:'跌倒过程待确认',
+  reason_code:'classification_geometry_conflict',event_state:'unobservable',changes_alarm:false,
+  establishes_safety:false,establishes_recovery:false,...overrides};
+}
+
+test('current visible unresolved evidence changes explanation without changing event state or colors', () => {
+ const h=harness();h.context.payload=result();h.context.payload.source_time=12;
+ h.context.payload.decision_context=decisionContext();
+ const before=JSON.stringify(h.context.payload);
+ h.run('renderResult(payload,12,40)');
+ assert.equal(h.nodes.get('fall-state').textContent,'跌倒过程待确认');
+ assert.match(h.nodes.get('decision-context-summary').textContent,/骨架可见.*跌倒过程待确认/);
+ assert.equal(h.nodes.get('fall-card').dataset.state,'unobservable');
+ assert.equal(h.run('currentFallState(payload)'),'unobservable');
+ assert.equal(h.run('diagnosticState.events.length'),0);
+ assert.equal(JSON.stringify(h.context.payload),before);
+ h.run('resetResults()');
+ assert.equal(h.nodes.get('decision-context-summary').textContent,'观测与跌倒证据：等待观测');
+});
+
+test('camera and missing observation remain unavailable while identity ambiguity stays explicit', () => {
+ for(const [reason,pose,identity,text] of [
+  ['camera_quality_unavailable','unavailable','not_established','画面稳定性不足'],
+  ['no_strong_candidate','unavailable','not_established','当前骨架观测不足'],
+  ['multiple_person_candidates','observable','ambiguous','目标关联有歧义，跌倒证据不可用']]){
+  const h=harness();h.context.payload=result();h.context.payload.source_time=12;
+  h.context.payload.decision_context=decisionContext({reason_code:reason,pose_observation_status:pose,
+   event_identity_status:identity,fall_evidence_status:'unavailable',text});
+  h.run('renderResult(payload,12,40)');
+  assert.equal(h.nodes.get('fall-state').textContent,text);
+  assert.equal(h.nodes.get('fall-card').dataset.state,'unobservable');
+  assert.equal(h.run('diagnosticState.events.length'),0);
+  if(identity==='ambiguous')assert.match(h.nodes.get('decision-context-summary').textContent,/目标关联有歧义/);
+ }
+});
+
+test('stale future malformed or unclocked semantic context cannot override old display behavior', () => {
+ for(const change of [{source_time_s:11},{source_time_s:13},{schema_version:2},
+  {fall_evidence_status:'safe'},{pose_observation_status:'safe'},{event_identity_status:'guessed'}]){
+  const h=harness();h.context.payload=result();h.context.payload.source_time=12;
+  h.context.payload.decision_context=decisionContext(change);
+  h.run('renderResult(payload,12,40)');
+  assert.equal(h.nodes.get('fall-state').textContent,'无法判断');
+  assert.match(h.nodes.get('decision-context-summary').textContent,/未提供分项状态/);
+ }
+ const h=harness();h.context.payload=result();h.context.payload.decision_context=decisionContext();
+ h.run('renderResult(payload,12,40)');assert.equal(h.nodes.get('fall-state').textContent,'无法判断');
+});
+
+test('semantic explanations cannot downgrade confirmed events or bypass stale event identity', () => {
+ const h=harness();h.context.payload=rgbLifecyclePayload();h.context.payload.source_time=12;
+ h.context.payload.decision_context=decisionContext();
+ h.run('renderResult(payload,12,40)');
+ assert.equal(h.nodes.get('fall-card').dataset.state,'confirmed');
+ assert.notEqual(h.nodes.get('fall-state').textContent,'跌倒过程待确认');
+ h.context.payload.fall_observation={source:'none',person:null,selection:{}};
+ h.context.payload.decision_context=decisionContext({fall_evidence_status:'confirmed',text:'事件已确认'});
+ h.run('renderResult(payload,12,40)');
+ assert.equal(h.nodes.get('fall-card').dataset.state,'unobservable');
+ assert.equal(h.nodes.get('fall-state').textContent,'无法判断');
+ assert.match(h.nodes.get('decision-context-summary').textContent,/未提供分项状态/);
+});
+
+test('diagnostic export retains split semantic scalars without image coordinates', () => {
+ const h=harness();h.context.payload=result();h.context.payload.source_time=12;
+ h.context.payload.decision_context=decisionContext({box:[1,2,3,4],keypoints:[[1,2,3]]});
+ h.context.payload.tool_event={schema_version:1,tool:'fall_detection',state:'unobservable',
+  decision_context:h.context.payload.decision_context};
+ h.run('updateDiagnostics(payload,12)');
+ const sample=h.run('buildDiagnosticReport().samples[0]');
+ assert.equal(sample.decision_context.pose_observation_status,'observable');
+ assert.equal(sample.decision_context.fall_evidence_status,'unresolved');
+ assert.equal(sample.decision_context.source_time_s,12);
+ assert.equal(sample.decision_context.changes_alarm,false);
+ assert.equal(sample.decision_context.establishes_safety,false);
+ assert.equal(sample.decision_context.establishes_recovery,false);
+ assert.equal(sample.tool_event.decision_context.fall_evidence_status,'unresolved');
+ assert.equal(sample.decision_context.box,undefined);assert.equal(sample.decision_context.keypoints,undefined);
+ assert.equal(sample.fall.state,'unobservable');
+});

@@ -12,6 +12,8 @@ TESTS = [
     'test_fall_event_fusion.py', 'test_webcam_fall_handoff.py',
     'test_stgcn_temporal.py', 'test_webcam_temporal.py',
     'test_runtime_resources.py', 'test_source_handoff.py',
+    'test_binary_fall_evidence.py', 'test_care_loop.py', 'test_event_interface.py',
+    'test_event_store.py', 'test_perception_semantics.py',
 ]
 
 

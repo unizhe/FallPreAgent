@@ -1,6 +1,6 @@
 # GitHub 交接与发布范围
 
-本轮整理的是可供两人协作的源码版本，不是包含训练数据与模型的全盘备份。尚未配置远程仓库、暂存文件、创建提交或推送；项目自身许可证也尚未选定。后续提供目标 GitHub 仓库地址即可安排首次推送，不需要在聊天中提供密码或访问令牌。
+GitHub 的 `main` 已有首个源码交接提交 `4cd8841`。本次准备发布单 Agent 模拟闭环、感知协议和末段时序影子入口，供协作者继续开发。项目及第三方资源的许可记录见 [THIRD_PARTY.md](../THIRD_PARTY.md)。
 
 ## 分享哪些文件
 
@@ -9,20 +9,20 @@
 - `src/`、`scripts/`、`tests/`：实现、运行入口、研究工具与测试。
 - `assets/webcam/`：当前界面与录制代码。
 - `configs/*.json`：配置样例、模型资源登记和研究元信息，不含模型本体。
-- `README.md`、本说明、`ARCHITECTURE.md`、`DEVELOPMENT.md`、`CONTRIBUTING.md`、`THIRD_PARTY.md`。
+- `README.md`、本说明、`ARCHITECTURE.md`、`DEVELOPMENT.md`、单 Agent 交接文档及架构图、`CONTRIBUTING.md`、`THIRD_PARTY.md`。
 - `pyproject.toml`、`uv.lock`、固定来源清单、附加依赖清单与 Git 文本配置。
 
 历史脚本保留是为了维护依赖与研究复现；它们不保证能在没有历史产物的机器上直接运行。README 中的入口才是接手开发时的推荐路径。
 
 以下留在本地，不进入分享范围：个人录制与 ZIP、帧图、复核标签、训练数据、模型文件、`runs/`、`tmp/`、`output/`、`third_party/`、环境文件、数据库、浏览器缓存和原有实验报告。历史 README 保存在 `docs/local-history/README-before-github-20261108.md`。目录与软链接均保留原位，没有清空或迁移共享素材。
 
-新增顶层目录或需要公开的文档时，先检查内容，再显式更新 `.gitignore`。不要使用 `git add -f` 绕过资源边界。忽略规则不能撤回以前已提交的文件；本轮初查时该仓库还没有提交历史，后续仍需检查实际暂存内容。
+新增顶层目录或需要公开的文档时，先检查内容，再显式更新 `.gitignore`。不要使用 `git add -f` 绕过资源边界。忽略规则不能撤回以前已提交的文件，提交前需检查实际暂存内容。
 
 ## 资源如何交接
 
 公开模型由 `scripts/project_resources.py fetch-public` 按锁定来源下载并校验。MMAction2 由同脚本的 `fetch-sources` 恢复；基础 Ultralytics / ByteTrack 来源由 `scripts/fetch_sources.py` 恢复。脚本不会下载个人视频或整个训练集。
 
-V7 动作模型和 C/D 实验头没有公开下载地址。维护者按所需任务单独提供经许可的确切文件，接收方使用 `import` 校验。只做合同、规则或智能体模拟的同学无需获取它们。资源文件不提交 Git；可用的公开下载来源也不等于允许将模型重新发布。
+V7 动作模型、C/D 实验头和末段 ST＋几何影子头是团队产物。维护者按所需任务单独提供经许可的确切文件，接收方使用 `import` 校验。只做合同、规则或智能体模拟的同学无需获取它们。资源文件不提交 Git；可用的公开下载来源也不等于允许将模型重新发布。
 
 新路径优先，原开发机旧路径只读兼容。发现现有文件损坏或版本不符时不会静默换另一个版本，也不会覆盖。依赖恢复、资源恢复和视频数据交接是三件独立的事。项目目前按源码 checkout 运行，资源清单及前端不是独立 wheel 的完整安装包。
 
@@ -31,7 +31,8 @@ V7 动作模型和 C/D 实验头没有公开下载地址。维护者按所需任
 在仓库根目录执行：
 
 ```bash
-.venv/bin/python scripts/check_portable.py
+.venv/bin/python scripts/check_portable.py --with-ui
+.venv/bin/python scripts/replay_care_agent.py --demo --output runs/care-agent-handoff
 python3 scripts/prepare_github.py
 git status --short
 ```
@@ -66,6 +67,4 @@ python3 scripts/prepare_github.py --export output/fallpre-source.zip
 
 干净副本跳过的 Python 检查分别是原机历史实现比对和未启用的真模型检查；Node 跳过的是未分享的历史 v18 页面快照比对。其他测试照常运行。上述结果验证本轮整理与交接，不是新增真实视频识别效果评估。
 
-GitHub 仓库建立后，可按功能分支协作并通过 PR 合并。第一轮适合一人负责感知与时序，一人负责协议、回放和智能体模拟消费。事件合同变更由双方共同看；不要只以画面颜色或动作精度作为接入依据。
-
-首次推送前还需确定目标仓库和可见性。第三方许可和项目许可证的当前状态见 [THIRD_PARTY.md](../THIRD_PARTY.md)；本轮没有替项目作开源授权决定。
+协作者可按功能分支开发并通过 PR 合并。第一轮适合一人负责感知与时序，一人负责协议、回放和智能体模拟消费。事件合同变更由双方共同看；不要只以画面颜色或动作精度作为接入依据。

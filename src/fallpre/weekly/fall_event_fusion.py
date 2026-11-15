@@ -6,6 +6,7 @@ checks, cancel a baseline alarm, or establish safety from missing observations.
 """
 from copy import deepcopy
 
+from .perception_semantics import decision_context
 from .stgcn_fall_evidence import VERSION
 from .webcam_fall_handoff import LiveFallHandoff
 
@@ -82,4 +83,7 @@ class TemporalFallEventFusion:
             new_event=fall.get('new_event', False), lifecycle=fall.get('lifecycle'),
             temporal_support=support is not None, shared_pose_evidence=True,
             evidence_code=fall['reason_code'], requires_external_action=False)
+        actual['decision_context'] = decision_context(result, t, fall=fall, observation=actual['observation'])
+        actual['tool_event']['decision_context'] = deepcopy(actual['decision_context'])
+        actual['tool_event']['observation_status_semantics'] = 'legacy_event_state_proxy'
         return actual

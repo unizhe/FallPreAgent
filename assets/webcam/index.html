@@ -27,7 +27,7 @@
  <section class="summary-card"><span>当前动作</span><strong id="action">等待观测</strong></section>
  <section class="summary-card"><span>移动</span><strong id="behavior-locomotion">等待观测</strong></section>
  <section class="summary-card"><span>转向</span><strong id="behavior-turning">等待观测</strong></section>
- <section id="fall-card" class="summary-card fall-card" data-state="unobservable"><span>跌倒状态</span><strong id="fall-state">等待观测</strong></section>
+ <section id="fall-card" class="summary-card fall-card" data-state="unobservable"><span>跌倒状态</span><strong id="fall-state">等待观测</strong><small id="decision-context-summary">观测与跌倒证据：等待观测</small></section>
 </div>
 <section class="temporal-panel" id="temporal-panel" data-state="idle" aria-labelledby="temporal-title">
  <div class="temporal-heading"><h2 id="temporal-title">连续动作 · ST-GCN++</h2><div class="temporal-result"><strong id="temporal-action">等待连接</strong><span id="temporal-score"></span></div></div>
@@ -201,6 +201,31 @@ function renderFusion(value){
  $('fusion-candidate').hidden=!enabled&&!f;
  $('fusion-candidate').textContent=f?`融合候选（旁路）：${f.text||f.label} · ${f.reason||f.code||''}${f.conflicts.length?' · 冲突：'+f.conflicts.map(x=>x.code==='squat_vs_falling'?'蹲姿 / ST跌倒分类':x.code).join('、'):''}。主动作和报警保持原判断。`:'融合候选（旁路）：等待连续证据；主动作和报警保持原判断。';
 }
+function safeDecisionContext(value){
+ if(!value||typeof value!=='object')return null;
+ return fields(value,['schema_version','source_time_s','pose_observation_status','event_identity_status','fall_evidence_status','text','reason_code','event_state','pose_observation_source','changes_alarm','establishes_safety','establishes_recovery']);
+}
+function currentDecisionContext(result){
+ const c=result?.decision_context;
+ if(!c||c.schema_version!==1||!Number.isFinite(result.source_time)||c.source_time_s!==result.source_time)return null;
+ if(!['observable','unavailable'].includes(c.pose_observation_status)
+  ||!['ambiguous','not_established','current'].includes(c.event_identity_status)
+  ||!['confirmed','suspected','unresolved','recovery_pending','low_posture_reference','not_supported','unavailable'].includes(c.fall_evidence_status)
+  ||typeof c.text!=='string'||!c.text.trim())return null;
+ const state=currentFallState(result),alerts=['confirmed','suspected'];
+ if(c.event_state!=null&&c.event_state!==result.fall?.state)return null;
+ if((alerts.includes(state)||alerts.includes(c.fall_evidence_status))&&c.fall_evidence_status!==state)return null;
+ return c;
+}
+function renderDecisionContext(result){
+ const c=currentDecisionContext(result),node=$('decision-context-summary');
+ if(!c){node.textContent='观测与跌倒证据：当前未提供分项状态';return}
+ const pose={observable:'骨架可见',unavailable:'骨架观测不足'};
+ const evidence={confirmed:'事件已确认',suspected:'倒地证据累计中',unresolved:'跌倒过程待确认',
+  recovery_pending:'恢复尚未确认',low_posture_reference:'低位参考待观察',not_supported:'当前未见支持证据',unavailable:'跌倒证据不可用'};
+ const identity={ambiguous:'目标关联有歧义',not_established:'事件目标尚未建立',current:'当前事件目标已关联'};
+ node.textContent=`${pose[c.pose_observation_status]} · ${evidence[c.fall_evidence_status]} · ${identity[c.event_identity_status]}`;
+}
 function safeFallTemporal(value){
  if(!value||typeof value!=='object')return null;
  const safe=fields(value,['schema_version','status','support','code','reason','source_time_s','changes_primary_decision','changes_alarm','changes_event','negative_example']);
@@ -333,6 +358,7 @@ function resetResults(){
  lastRenderedResult=null;
  renderFusion(null);
  renderFallTemporal(null);
+ $('decision-context-summary').textContent='观测与跌倒证据：等待观测';
  diagnosticState={started_at:new Date().toISOString(),ended_at:null,source:{type:session.sourceType,name:session.sourceName,sample_step_s:session.sourceType==='video'?videoStep:null},model:{id:session.modelId,label:modelLabel(session.modelId)},fall_mode:session.fallMode,fall_model:null,temporal_model:safeTemporalModel(serverStatus?.temporal_model?.model||serverStatus?.temporal_model),action_pipeline:safeActionPipeline(serverStatus?.action_pipeline),summary:null,samples:[],received:0,events:[],fall_counts:{},fall_events:[],fall_statistics:null,capture_plan:session.capturePlan||null,retain_all:Boolean(session.recordRequested),requests:[],client_config:{capture_max_width:960,capture_max_height:720,jpeg_quality:.85,display_mirror:displayMirror}};diagnosticPaint=0;
  renderBehavior(null);renderRiskPoints(null,null);renderLiveSetup(null);renderTemporal(null);$('view-status').textContent='全身入镜，先站稳 2 秒';
  changes=[];lastLabel=null;fallChanges=[];lastFall=null;ticks=[];lastSource=-1;sourceGaps=[];timingSource=null;$('source-cadence').textContent='动作采样：等待连续观测';
@@ -367,7 +393,7 @@ function updateDiagnostics(result,t,clientTiming=null){
  const a=result.action||{},d=a.diagnostics,sample=diagnosticSample(d?.sample||{t,label:a.label,raw_label:a.raw_label,phase:a.phase,reason:a.reason});
  sample.live_setup=fields(result.live_setup,['camera_stable','camera_code','camera_reason','person_count','complete_sides','feet_visible','source_gap_s','median_gap_s','sampling_slow','fall_reason','fall_code','fallen_candidates','strongest_fallen_score','weights_finetuned_on_personal_videos']);sample.view_bend=fields(result.action?.view_bend,['ready','candidate','confirmed','code','reference_age_s','shoulder_drop','hip_travel','foot_travel','compression','minimum_knee']);sample.lying_observation=fields(result.lying_observation,['label','observed','text','target_index','source_time','samples','new_event','event_id','reason']);
  sample.t=t;sample.source_type=session.sourceType;sample.model=fields(result.model||diagnosticState.model,['id','label','sha256']);sample.fall=safeFall(result.fall);sample.fall_observation=safeFallObservation(result.fall_observation);sample.scene_quality={...fields(result.quality,['camera_stable','code','reason']),metrics:fields(result.quality?.metrics,['matches','inliers','inlier_fraction','coverage','current_features','reference_features','background_shift_px','reference_generation','reference_time_s','reference_trusted','reacquisition_count'])};sample.fall_mode=result.fall_mode||'pose';sample.fall_model=safeFallModel(result.fall_model);sample.pose_fall=result.pose_fall?safeFall(result.pose_fall):null;sample.rgb_diagnostics=safeRgbDiagnostics(result.rgb_diagnostics);
- sample.behavior=safeBehavior(result.behavior);sample.risk_points=safeRiskPoints(result.risk_points);sample.temporal=safeTemporal(result.temporal);sample.fall_temporal_evidence=safeFallTemporal(result.fall_temporal_evidence);renderFallTemporal(result.fall_temporal_evidence,result.fused_fall);sample.baseline_fall=result.baseline_fall?safeFall(result.baseline_fall):null;sample.fused_fall=result.fused_fall?fields(result.fused_fall,['schema_version','policy','temporal_accelerated','baseline_confirmation_s','supported_confirmation_s','shared_pose_evidence']):null;sample.tool_event=result.tool_event?fields(result.tool_event,['schema_version','tool','source_time_s','observation_status','state','event_id','new_event','lifecycle','temporal_support','shared_pose_evidence','evidence_code','requires_external_action']):null;sample.fused_action=safeFusion(result.fused_action);renderFusion(result.fused_action);if(sample.temporal?.model)diagnosticState.temporal_model=sample.temporal.model;sample.client_timing=clientTiming;updateSourceCadence(t);
+ sample.decision_context=safeDecisionContext(result.decision_context);sample.behavior=safeBehavior(result.behavior);sample.risk_points=safeRiskPoints(result.risk_points);sample.temporal=safeTemporal(result.temporal);sample.fall_temporal_evidence=safeFallTemporal(result.fall_temporal_evidence);renderFallTemporal(result.fall_temporal_evidence,result.fused_fall);sample.baseline_fall=result.baseline_fall?safeFall(result.baseline_fall):null;sample.fused_fall=result.fused_fall?fields(result.fused_fall,['schema_version','policy','temporal_accelerated','baseline_confirmation_s','supported_confirmation_s','shared_pose_evidence']):null;sample.tool_event=result.tool_event?fields(result.tool_event,['schema_version','tool','source_time_s','observation_status','observation_status_semantics','state','event_id','new_event','lifecycle','temporal_support','shared_pose_evidence','evidence_code','requires_external_action']):null;if(sample.tool_event)sample.tool_event.decision_context=safeDecisionContext(result.tool_event.decision_context);sample.fused_action=safeFusion(result.fused_action);renderFusion(result.fused_action);if(sample.temporal?.model)diagnosticState.temporal_model=sample.temporal.model;sample.client_timing=clientTiming;updateSourceCadence(t);
  diagnosticState.samples.push(sample);diagnosticState.received++;if(!diagnosticState.retain_all&&diagnosticState.samples.length>diagnosticLimit)diagnosticState.samples.shift();
  if(d?.summary)diagnosticState.summary=diagnosticSummary(d.summary);if(result.model)diagnosticState.model=fields(result.model,['id','label','sha256']);if(result.fall_model)diagnosticState.fall_model=safeFallModel(result.fall_model);
  const fallState=result.fall?.state||'unobservable';diagnosticState.fall_counts[fallState]=(diagnosticState.fall_counts[fallState]||0)+1;recordEvent(result.fall,t);
@@ -440,7 +466,11 @@ function currentFallState(result){
 function fallDisplayText(result,state=currentFallState(result)){
  const f=result.fall||{};
  if(f.state!==state)return fallNames[state];
- if(state==='unobservable')return fallPerson(result)&&f.observed&&f.target_epoch===result.fall_observation?.selection?.target_epoch&&f.lifecycle==='low_posture_ready'?'低位参考待观察':fallNames[state];
+ if(state==='unobservable'){
+  const c=currentDecisionContext(result);
+  if(c&&!['confirmed','suspected'].includes(c.fall_evidence_status))return c.text;
+  return fallPerson(result)&&f.observed&&f.target_epoch===result.fall_observation?.selection?.target_epoch&&f.lifecycle==='low_posture_ready'?'低位参考待观察':fallNames[state];
+ }
  return f.text||fallNames[state];
 }
 function fallLifecycleText(result,state){
@@ -575,7 +605,7 @@ async function resetView(){
 }
 function renderResult(result,t,elapsed,clientTiming=null){
  lastRenderedResult=result;
- renderLiveSetup(result);renderViewStatus(result);renderBehavior(result.behavior);renderTemporal(result.temporal);renderRiskPoints(result.risk_points,t);draw(capture,result);const now=performance.now();ticks.push(now);if(ticks.length>20)ticks.shift();$('fps').textContent=ticks.length>1?((ticks.length-1)*1000/(now-ticks[0])).toFixed(1):'测量中';$('inference').textContent=(number(result.inference_ms)+number(result.action_ms)).toFixed(0);$('latency').textContent=elapsed.toFixed(0);$('people').textContent=(result.persons||[]).length;$('source-time').textContent='源时间 '+fmtTime(t);
+ renderLiveSetup(result);renderViewStatus(result);renderDecisionContext(result);renderBehavior(result.behavior);renderTemporal(result.temporal);renderRiskPoints(result.risk_points,t);draw(capture,result);const now=performance.now();ticks.push(now);if(ticks.length>20)ticks.shift();$('fps').textContent=ticks.length>1?((ticks.length-1)*1000/(now-ticks[0])).toFixed(1):'测量中';$('inference').textContent=(number(result.inference_ms)+number(result.action_ms)).toFixed(0);$('latency').textContent=elapsed.toFixed(0);$('people').textContent=(result.persons||[]).length;$('source-time').textContent='源时间 '+fmtTime(t);
  const a=result.action||{},f=result.fall||{},fallState=currentFallState(result);$('action').textContent=a.text||actionNames[a.label]||'未知';$('reason').textContent=a.reason||'等待证据';$('raw').textContent=`原始模型：${actionNames[a.raw_label]||a.raw_label||'—'} · 阶段：${phaseNames[a.phase]||a.phase||'—'}`;
  const resolvedLabel=a.resolved_label??a.raw_label,resolvedPhase=a.resolved_phase??a.phase;$('resolved').textContent=`协调后：${actionNames[resolvedLabel]||resolvedLabel||'—'} · 阶段：${phaseNames[resolvedPhase]||resolvedPhase||'—'}`;
  const observation=result.fall_observation,fallEpoch=observation?.selection?.target_epoch,recovery=observation?.recovery,hasFallPerson=Boolean(fallPerson(result));

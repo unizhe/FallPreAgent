@@ -26,6 +26,10 @@
 !/docs/ARCHITECTURE.md
 !/docs/DEVELOPMENT.md
 !/docs/GITHUB_PREPARATION.md
+!/docs/care-agent-20261110.md
+!/docs/assets/
+/docs/assets/*
+!/docs/assets/single-agent-tools-20261111.html
 /configs/*
 !/configs/*.json
 
@@ -47,6 +51,9 @@
 **/*.egg-info/
 **/.venv/
 **/*.sqlite3*
+**/*.sqlite
+**/*.sqlite-wal
+**/*.sqlite-shm
 **/*.log
 
 # No media, archives, model weights or feature caches in the source repository.

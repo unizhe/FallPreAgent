@@ -22,6 +22,7 @@ from ultralytics import YOLO
 
 from fallpre.runtime_resources import resource_path
 from fallpre.weekly.action_v7 import CompletionModel
+from fallpre.weekly.perception_semantics import decision_context
 from fallpre.weekly.webcam_actions import LiveActions
 from fallpre.weekly.webcam_live_setup import LiveSetup
 from fallpre.weekly.webcam_behavior import BehaviorAxes, apply_auxiliary_bend
@@ -45,7 +46,7 @@ ACTION_PIPELINE = dict(id='live-actions-v4', label='实时动作：正面弯腰�
 # distinguish an old loaded service from newer files waiting for a restart.
 _implementation_files = [Path(__file__)] + sorted((ROOT / 'src/fallpre/weekly').glob('*.py'))
 ACTION_PIPELINE.update(
-    implementation_revision='2026-11-08.fall-event-fusion',
+    implementation_revision='2026-11-09.output-separation',
     implementation_sha256=hashlib.sha256(b''.join(
         str(p.relative_to(ROOT)).encode() + b'\0' + p.read_bytes()
         for p in _implementation_files)).hexdigest())
@@ -159,6 +160,7 @@ class LiveSession:
             source_time, action, result['behavior'],
             result['fall'] if self.fall_mode == 'rgb' else {}, result.get('rgb_diagnostics', {}),
             camera_stable=quality['camera_stable'])
+        result['decision_context'] = decision_context(result, source_time)
 
 
 class PoseEngine:
@@ -323,6 +325,7 @@ class PoseEngine:
             result['fall']['summary'] = state.fall_event_fusion.manager.export()
             result['fall_observation'] = candidate['observation']
             result['tool_event'] = candidate['tool_event']
+            result['decision_context'] = candidate['decision_context']
         self.streams[stream_id] = (state, now)
         return result
 

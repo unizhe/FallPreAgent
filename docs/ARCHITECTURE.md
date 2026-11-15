@@ -2,13 +2,14 @@
 
 本文描述仓库当前实现，面向第一次接手开发的人。安装和运行见 [README](../README.md)，协作及测试见 [DEVELOPMENT](DEVELOPMENT.md)。项目的核心目标是用连续视觉证据改善跌倒事件识别；基础动作精度是诊断指标，不能代替事件漏检、误报、延迟和观测覆盖率。
 
-## 1. 先分清三个入口
+## 1. 运行入口
 
 | 入口 | 已实现的职责 | 当前边界 |
 | --- | --- | --- |
 | [摄像头演示服务](../scripts/webcam_pose_demo.py) + [网页](../assets/webcam/index.html) | 图像推理、目标关联、当前动作、跌倒事件、可选 ST-GCN++ 证据及受限事件融合 | 当前视觉主线；不自动执行对外报警；不包含实验二分类头 |
 | [PerceptionChain](../src/fallpre/weekly/perception_chain.py) + [JSONL 回放入口](../scripts/replay_perception_chain.py) | 将基础观测和时序结果组装为明确的感知工具输出，比较动作、过程判别、事件与通知 | 新链路的离线入口；实验二分类头没有报警决定权；尚未替换摄像头服务的完整输出协议 |
-| [CLI](../src/fallpre/cli.py) / [MVPService](../src/fallpre/service.py) / [Agent](../src/fallpre/agent.py) | 早期 `Snapshot` 协议、风险规则、SQLite 事件/执行记录、工具接口、模拟执行 | 独立的 MVP 链路；尚未接收 `PerceptionChain` 输出；没有接入具体大语言模型服务 |
+| [单 Agent 回放](../scripts/replay_care_agent.py) / [CareLoop](../src/fallpre/care_loop.py) | 消费 schema v1 事件与观测，持久查询、去重、模拟提醒和报警 | 摄像头以显式适配或 JSONL 回放接入；JEV 单独做建议对照 |
+| [CLI](../src/fallpre/cli.py) / [MVPService](../src/fallpre/service.py) | 早期 `Snapshot` 协议、风险规则及模拟工具 | 旧 MVP 独立入口 |
 
 `src/fallpre/weekly/` 虽然沿用实验阶段的目录名，但包含当前摄像头主线，不能把整个目录视为可删除的历史代码。`action_v2` 到 `action_v7` 之间也存在实际导入关系。带日期的实验脚本保留用于追溯，其默认输入可能属于原开发机；它们不是新成员的安装入口。
 
@@ -128,25 +129,22 @@ flowchart LR
 
 只有明确的当前恢复证据才能报告恢复。代码区分站立/坐姿恢复、低位支持状态和恢复中；目标消失不是恢复。面向智能体的输出应保留这些差异，不能只发送一个 `fall: true/false`。
 
-## 4. 早期 MVP 与智能体接口
+## 4. 单 Agent 双策略
 
 ```mermaid
 flowchart LR
-    A[旧摄像头 / 视频入口] --> B[ObservationPipeline]
-    B --> C[Snapshot]
-    C --> D[MVPService 确定性规则]
-    D --> E[SQLite 状态与执行日志]
-    D --> F[ExecutionService]
-    G[FallPreventionAgent 工具包装] --> D
-    F --> H[模拟执行 / 配置后的通道适配器]
-    P[新 PerceptionChain 输出] -. 待实现协议适配 .-> C
+    A[实时感知主结果] --> B[schema v1 感知消息]
+    P[PerceptionChain] --> B
+    B --> C[单 Agent / CareLoop]
+    C --> D[EventStore 与 EventInterface]
+    C --> E[ExecutionService 模拟执行]
+    E --> F[回执与后续观测]
+    C --> G[JEV 建议对照导出]
 ```
 
-[pipeline.py](../src/fallpre/pipeline.py) 将旧的感知、场景标定、人体绑定、障碍和时序证据组合为 [schemas.py](../src/fallpre/schemas.py) 中的 `Snapshot`。[service.py](../src/fallpre/service.py) 运行确定性规则；[state_store.py](../src/fallpre/state_store.py) 与 [execution.py](../src/fallpre/execution.py) 提供持久事件记录、执行幂等和重试。默认 `dry_run`，录像回放不执行真实通道。
+实时适配从主事件输出提取确认、身份和恢复信息。末段 ST＋几何影子服务的日志附带同一格式的 `perception` 对象。Agent 依据上游确认事件执行模拟报警，依据可见且连续的坐姿到起身观测执行普通提示。事件键、处理状态、恢复和执行回执的字段及演示命令见 [单 Agent 交接](care-agent-20261110.md) 与 [架构图](assets/single-agent-tools-20261111.html)。
 
-[agent.py](../src/fallpre/agent.py) 是与模型供应商无关的工具包装，提供工具描述、调用和人物状态查询。[tools.py](../src/fallpre/tools.py) 定义查询实时状态、证据、规则评估、执行及记录等工具。这里没有已接通的 LLM 推理循环；跌倒确认也不依赖等待 LLM 回复。
-
-下一步接智能体时，要增加显式协议适配，处理人物/会话标识、源时间、质量与有效期、事件键、恢复和持久化去重。不能把新输出字典直接传给要求 `Snapshot` 的 `MVPService.ingest_snapshot`，也不能因为旧 MVP 有 SQLite 就认为新链路已经持久去重。
+[FallPreventionAgent](../src/fallpre/agent.py) 通过 `describe_tools()/invoke()` 调用所选后端导出的工具。新感知走 `CareLoop` 的 `observe`，旧 `Snapshot` 和 `inspect_person` 仍走 `MVPService`。两条入口共享执行组件，业务规则由各自的上游负责。
 
 ## 5. 当前工程边界
 

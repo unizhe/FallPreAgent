@@ -231,7 +231,7 @@ class FallTemporalEvidence:
         self.generation = None
         self.association_pair = None
 
-    def update(self, result, t, temporal=None):
+    def update(self, result, t, temporal=None, process_model=None):
         out = dict(schema_version=1, version=VERSION, mode='shadow', status='abstain',
                    support=False, code='evidence_unavailable', reason='证据不足',
                    source_time_s=float(t) if _finite(t) else None,
@@ -328,6 +328,23 @@ class FallTemporalEvidence:
                                      falling_score=falling_score, falling_margin=margin,
                                      window_start_s=start, window_end_s=end, result_age_s=age,
                                      score_semantics='closed-set past-action classification; not fall probability')
+        if process_model is not None:
+            # A trained process head is not relabelled as an NTU60 class. It
+            # must belong to the exact same causal window and identity.
+            score = process_model.get('fall_process_score')
+            if (process_model.get('status') != 'ready' or not _finite(score)
+                    or not 0 <= score <= 1 or process_model.get('window_end_s') != end
+                    or process_model.get('target_epoch') != epoch
+                    or process_model.get('generation') != state['generation']
+                    or not process_model.get('weights_sha256')):
+                return stop('process_head_unavailable_or_mismatched', '判别头缺失或与当前窗口身份不匹配')
+            out['model_evidence'].update(
+                source='binary_process_head', ntu60_falling_score=falling_score,
+                process_head=dict(process_model),
+                score_semantics='experimental observed fall-process classification; not calibrated risk')
+            falling_score = float(score)
+            margin = 2*falling_score-1
+            out['model_evidence'].update(falling_score=falling_score, falling_margin=margin)
         squat = (geometry['geometry_squat'] or action.get('label') == 'squatting'
                  or (action.get('low_squat') or {}).get('candidate') is True)
         if squat and falling_score >= .5:
@@ -338,7 +355,8 @@ class FallTemporalEvidence:
         if out['conflicts']:
             out['status'] = 'conflict'
             return stop('squat_fall_conflict', '蹲姿与ST跌倒分类冲突；不触发或取消现有事件')
-        if top != 42 or falling_score < self.config.minimum_score or margin < self.config.minimum_margin:
+        if (process_model is None and top != 42 or falling_score < self.config.minimum_score
+                or margin < self.config.minimum_margin):
             return stop('model_fall_support_insufficient', '时序跌倒分类证据不足；这不等于非跌倒')
         if (len(self.geometry_rows) < 3
                 or t - self.geometry_rows[0] < self.config.minimum_motion_span_s - 1e-9):
