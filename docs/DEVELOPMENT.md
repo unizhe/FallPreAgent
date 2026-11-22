@@ -28,6 +28,8 @@
 
 推荐一次运行完整的可分享测试组：`python scripts/check_portable.py`。它包含合同回归、时间窗口、二分类证据、观测语义、持久事件和单 Agent 闭环，以及资源管理与源码交接测试；加 `--with-ui` 可运行无需浏览器的 Node 录制测试。
 
+P1/P2 决策持久化及故障恢复回归也包含在 `check_portable.py`：`tests/test_decision_loop.py` 使用临时 SQLite、合成 envelope 和注入时钟，覆盖同时间冲突、同输入重放、跨进程 lease、两个调度者竞争、迟到结果、质量门、有限补采、反馈 CAS 和结果游标重启恢复。`tests/test_aliyun_decision.py` 覆盖 Aliyun 的无网络 transport 替身、响应合同、脱敏、总预算、显式 worker 路径和重启预算恢复，不读取真实 `.env`、不联网。`tests/test_live_decision.py` 与 `tests/test_agent_api.py` 检查真实推理结果适配、缺项/过期降级、run 权限、帧去重及 API 路由；它们使用有标记的合成推理结构，不调用模型、不联网。独立演示与显式真实 smoke 命令见 README 第 5 节及摄像头章节。
+
 ```bash
 python -m pytest -q \
   tests/test_end_to_end.py \

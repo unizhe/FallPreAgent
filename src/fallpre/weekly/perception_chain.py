@@ -48,6 +48,8 @@ class PerceptionRuntime(STGCNRuntime):
             scores = predict_fall_head(parameters, vector[None])[0]
             heads[name] = dict(status='ready', non_fall_score=float(scores[0]),
                                fall_process_score=float(scores[1]), weights_sha256=digest,
+                               generation=result['generation'], target_epoch=result['target_epoch'],
+                               window_end_s=result['window_end_s'],
                                feature_dim=len(vector), training_source='URFD weak-label development',
                                deployment_status='experimental_not_alarm_authority')
         result['fall_heads'] = heads

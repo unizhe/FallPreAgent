@@ -67,7 +67,7 @@ function harness({record = true, fastTimeout = false, deferCapture = false, sour
       if (items.some(item => item.isOption)) this.value = (items.find(item => item.selected) || items[0]).value;
     },
     focus() { this.focusCalls++; },
-    pause() {}, removeAttribute() {}, remove() {}, click() {},
+    pause() {}, load() {}, removeAttribute() {}, remove() {}, click() {},
     addEventListener() {}, removeEventListener() {},
   });
   const document = {
@@ -140,6 +140,58 @@ test('full production script parses and its static DOM references exist', () => 
   const references = [...script.matchAll(/\$\('([^']+)'\)/g)].map(match => match[1]);
   assert(references.every(id => ids.includes(id)));
   assert.match(html, /<script src="\/recording\.js"><\/script>/);
+});
+
+test('scrubbing reuses saved frames and window probabilities while inference time keeps advancing', () => {
+  const h = harness({record: false});
+  h.context.payload = result();
+  h.run(`
+    session.sourceType='video';session.agentEnabled=true;
+    videoReview.duration=30;fileURL='blob:demo';
+    reviewSource.readyState=2;
+    activeAgentRun={run_id:'test-video',provider_status:{provider:'aliyun'}};
+    agentHistoryCache=[
+      {cursor:1,source_time:2.6,result:{status:'ready',fall_probability:0.7,
+       source_window:{start_s:0.5,end_s:2.5},provider_metadata:{answers:{
+        evidence_sufficiency:{probabilities:{sufficient:0.9}},
+        next_step:{probabilities:{emit_result:0.8}}}}}},
+      {cursor:2,source_time:2.5,result:{status:'ready',fall_probability:0.2,
+       source_window:{start_s:0.5,end_s:2.5}}},
+      {cursor:3,source_time:3.5,result:{status:'ready',fall_probability:1,
+       source_window:{start_s:2.6,end_s:3.4}}},
+    ];
+    lastSource=2;renderResult(payload,2,30);
+    lastSource=3;renderResult(payload,3,30);
+    reviewVideoAt(2);seekVideoReviewSource();paintVideoReviewFrame();
+  `);
+  assert.equal(h.nodes.get('video-review-image').hidden, false);
+  assert.match(h.nodes.get('source-time').textContent, /回看时间 00:02\.0/);
+  assert.match(h.nodes.get('agent-result-scope').textContent, /回看/);
+  assert.equal(h.nodes.get('agent-probability').textContent, '70.0%');
+  assert.equal(h.nodes.get('agent-sufficient').textContent, '90.0%');
+  assert.equal(h.nodes.get('agent-emit_result').textContent, '80.0%');
+  assert.equal(h.run('video.currentTime'), 10);
+  assert.equal(h.run('lastSource'), 3);
+  assert.equal(h.fetches.length, 0);
+
+  h.run(`
+    lastSource=4;renderResult(payload,4,30);
+    renderAgentProjection({projection:{current:{status:'ready',current_applicable:true,
+      fall_probability:0.4,source_window:{start_s:2,end_s:4}}}});
+  `);
+  assert.equal(h.nodes.get('agent-probability').textContent, '70.0%');
+  assert.equal(h.run('videoReview.time'), 2);
+  assert.equal(Number(h.nodes.get('video-progress').value), 2);
+
+  h.run('reviewVideoAt(25);seekVideoReviewSource()');
+  assert.equal(h.run('videoReview.time'), 4);
+  assert.equal(h.nodes.get('agent-status').textContent, '此处暂无决策');
+  assert.equal(h.nodes.get('agent-probability').textContent, '—');
+  h.run('exitVideoReview()');
+  assert.equal(h.nodes.get('video-review-image').hidden, true);
+  assert.match(h.nodes.get('source-time').textContent, /源时间 00:04\.0/);
+  assert.equal(h.nodes.get('agent-probability').textContent, '40.0%');
+  assert.equal(h.fetches.length, 0);
 });
 
 test('recordings retain more than 600 real observation calls; ordinary sessions retain the last 600', () => {

@@ -1,6 +1,6 @@
 # GitHub 交接与发布范围
 
-GitHub 的 `main` 已有首个源码交接提交 `4cd8841`。本次准备发布单 Agent 模拟闭环、感知协议和末段时序影子入口，供协作者继续开发。项目及第三方资源的许可记录见 [THIRD_PARTY.md](../THIRD_PARTY.md)。
+本说明覆盖 `main` 的感知、视频 Agent 和离线决策回放交接。项目及第三方资源的许可记录见 [THIRD_PARTY.md](../THIRD_PARTY.md)。
 
 ## 分享哪些文件
 
@@ -32,7 +32,7 @@ V7 动作模型、C/D 实验头和末段 ST＋几何影子头是团队产物。�
 
 ```bash
 .venv/bin/python scripts/check_portable.py --with-ui
-.venv/bin/python scripts/replay_care_agent.py --demo --output runs/care-agent-handoff
+.venv/bin/python scripts/replay_decision_agent.py --demo --provider mock --output runs/decision-agent-handoff
 python3 scripts/prepare_github.py
 git status --short
 ```
@@ -53,7 +53,7 @@ python3 scripts/prepare_github.py --export output/fallpre-source.zip
 
 最小测试组使用合成输入与替身，验证协议、历史有效性、多人保护、事件去重、资源错误提示和源码边界。真实模型检查和真实视频回归分层执行，见 [开发指南](DEVELOPMENT.md)。在干净源码副本中重用本机已安装的 Python 依赖进行测试，能排查对原目录产物的隐式依赖，但不能冒充一台新机器从网络完整安装成功。
 
-2026-11-08 本轮验证记录：
+2026-11-08 首次源码交接的历史验证记录：
 
 | 检查 | 结果 |
 | --- | --- |

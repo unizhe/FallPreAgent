@@ -14,6 +14,10 @@ TESTS = [
     'test_runtime_resources.py', 'test_source_handoff.py',
     'test_binary_fall_evidence.py', 'test_care_loop.py', 'test_event_interface.py',
     'test_event_store.py', 'test_perception_semantics.py',
+    'test_decision_config.py', 'test_decision_contracts.py', 'test_decision_provider.py',
+    'test_aliyun_decision.py',
+    'test_decision_review_regressions.py', 'test_decision_loop.py',
+    'test_live_decision.py', 'test_agent_api.py',
 ]
 
 
@@ -28,7 +32,8 @@ def main():
                     *[str(ROOT / 'tests' / name) for name in TESTS]],
                    cwd=ROOT, check=True)
     if args.with_ui:
-        subprocess.run([node, '--test', 'tests/webcam_recording_core.cjs', 'tests/webcam_recording_ui.cjs'],
+        subprocess.run([node, '--test', 'tests/webcam_recording_core.cjs', 'tests/webcam_recording_ui.cjs',
+                        'tests/webcam_agent_poll.cjs', 'tests/webcam_agent_render.cjs'],
                        cwd=ROOT, check=True)
 
 

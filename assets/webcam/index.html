@@ -10,30 +10,89 @@
 .toolbar select{appearance:none;-webkit-appearance:none;height:44px;min-height:44px;line-height:22px;padding:10px 34px 10px 14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23b9c9d2' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center}
 .toolbar button{height:44px;min-height:44px;line-height:22px;padding:10px 14px}.toolbar .device-row{align-items:end}.toolbar .field>span{line-height:18px}
 .temporal-panel{margin-top:12px;padding:14px 18px;border:1px solid #324b59;border-radius:12px;background:#112029}.temporal-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.temporal-heading h2{font-size:13px;font-weight:550;color:#b9d5e3}.temporal-result{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}.temporal-result strong{font-size:19px;font-weight:570;color:#c4e5f4}.temporal-result span{font-size:12px;color:var(--muted)}.temporal-panel>p{font-size:12px;margin:7px 0 0}.temporal-panel details{margin-top:8px;font-size:12px;color:var(--muted)}.temporal-panel summary{display:inline-block;color:#a8c7d7}.temporal-details{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin-top:10px}.temporal-details ol{margin:0;padding-left:21px;color:#c1d3dd}.temporal-details li{padding:3px 0}.temporal-details p{margin:3px 0}.temporal-panel[data-state=ready]{border-color:#416878}@media(max-width:700px){.temporal-panel{padding:13px 14px}.temporal-heading{align-items:flex-start}.temporal-result{width:100%;gap:10px}.temporal-result strong{font-size:18px}.temporal-details{grid-template-columns:1fr}}
+/* Keep the video and live results together on desktop. */
+@media(min-width:821px){
+ body{max-width:1680px;padding:14px 20px 24px}
+ .app-header{margin-bottom:12px}
+ .toolbar{padding:10px 14px;margin-bottom:12px}
+ .monitor-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(246px,1fr);gap:12px;align-items:start}
+ .stage-media canvas{max-height:clamp(210px,calc(100vh - 265px),65vh)}
+ @supports(height:100dvh){.stage-media canvas{max-height:clamp(210px,calc(100dvh - 265px),65dvh)}}
+}
+.monitor-results{min-width:0;display:grid;gap:10px}
+.monitor-results>.temporal-panel{margin:0;padding:10px 12px;min-width:0}
+.monitor-results .temporal-heading{gap:4px 9px}
+.monitor-results .temporal-result{width:auto;gap:5px}
+.monitor-results .temporal-result strong{font-size:16px}
+.monitor-results .temporal-details{grid-template-columns:1fr;gap:5px}
+.monitor-results .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:7px}
+.monitor-results .summary-card{min-height:0;padding:6px 8px}
+.monitor-results .summary-card strong{font-size:13px;margin-top:2px;overflow-wrap:break-word}
+.agent-answers{display:grid;gap:6px;margin-top:6px}
+.agent-question{padding-top:6px;border-top:1px solid var(--line)}
+.agent-question h3{margin:0 0 3px;font-size:12px;font-weight:550}
+.agent-options{display:flex;flex-wrap:wrap;gap:2px 9px;margin:0;color:#b5c8d3;font-size:11px}
+.agent-options strong{color:#daecf6;font-size:12px;font-weight:650;font-variant-numeric:tabular-nums}
+.agent-window-note{font-variant-numeric:tabular-nums}
+.agent-history-list li{margin:5px 0}
+.agent-history-list small{display:block;overflow-wrap:anywhere}
+.video-timeline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 12px}
+.video-timeline button{padding:4px 9px;font-size:12px}
+.video-timeline input[type=range]{width:100%;margin:3px 0;accent-color:var(--green);cursor:pointer}
+.video-timeline input[type=range]:disabled{cursor:default}
+#video-review-image{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain;background:#060b0e}
+@media(max-width:820px){.monitor-results{margin-top:10px}}
 </style></head>
 <body>
 <header class="app-header"><div class="brand"><span class="brand-icon" aria-hidden="true">◉</span><div><div class="eyebrow">FALLPREAGENT</div><h1>日常动作识别</h1></div></div><span class="local-badge"><i class="dot green"></i>本机实时分析</span></header>
 <section class="toolbar" aria-label="输入与控制"><div class="toolbar-inputs"><label class="field"><span>输入</span><select id="source-type"><option value="camera">实时摄像头</option><option value="video">本地视频</option></select></label>
  <div class="field camera-field" id="camera-field"><span>摄像头</span><div class="device-row"><select id="camera" aria-label="选择摄像头"><option value="">默认摄像头</option></select><button id="refresh" type="button">刷新设备</button></div></div>
  <label class="field video-field" id="video-field" hidden><span>本地视频</span><input id="video-file" type="file" accept="video/*,.mp4,.mov,.m4v,.webm"><small id="video-file-note">选择一段视频；文件在浏览器本地读取。</small></label></div>
- <div class="controls"><button id="start" type="button" disabled>开始摄像头</button><button id="stop" type="button" disabled>停止</button><button id="record" type="button" disabled>录制 60 秒</button></div>
+ <div class="controls"><button id="start" type="button" disabled>开始摄像头</button><button id="start-agent" type="button" disabled>开始 Agent</button><button id="stop" type="button" disabled>停止</button><button id="stop-agent" type="button" disabled>停止 Agent</button><button id="record" type="button" disabled>录制 60 秒</button></div>
  <div id="camera-help"><p id="camera-status" class="input-note" role="status">尚未开启摄像头。</p><details id="iphone-help" class="camera-help"><summary>手机连接说明</summary><p>iPhone 与 Mac 登录同一个 Apple 账户，开启“连续互通相机”，将手机稳固放置并锁屏。使用 USB 连接，或打开附近的 Wi-Fi 与蓝牙；点击“刷新设备”，在摄像头下拉列表选择手机后开始。<a href="https://support.apple.com/zh-cn/102546" target="_blank" rel="noopener noreferrer">Apple 接入说明</a></p></details></div>
  <div id="message" role="status" aria-live="polite">正在连接本地服务…</div>
 </section>
 <main>
-<section class="stage" aria-label="实时识别画面"><div class="stage-head"><span id="session-state">等待开始</span><span id="source-time">源时间 —</span></div><div class="stage-media"><canvas id="output" width="960" height="540" aria-label="当前画面与动作标注"></canvas><div id="empty"><span class="empty-symbol" aria-hidden="true">＋</span><strong id="empty-title">开始摄像头，查看实时动作</strong><p id="empty-copy">固定机位 · 全身入镜 · 先站稳 2 秒</p></div></div>
- <div class="stage-foot"><div class="legend" aria-label="状态颜色说明"><span><i class="dot"></i>目标待确认</span><span><i class="dot green"></i>动作目标</span><span><i class="dot yellow"></i>疑似 / 倒卧</span><span><i class="dot red"></i>已确认事件</span></div><span id="view-status">等待画面</span></div><div class="progress-wrap" id="video-progress-wrap" hidden><span id="video-progress-text">等待视频分析</span><progress id="video-progress" value="0" max="1" aria-label="视频分析进度"></progress></div></section>
-<div class="summary-grid" aria-label="实时结果">
+<div class="monitor-grid">
+<section class="stage" aria-label="实时识别画面"><div class="stage-head"><span id="session-state">等待开始</span><span id="source-time">源时间 —</span></div><div class="stage-media"><canvas id="output" width="960" height="540" aria-label="当前画面与动作标注"></canvas><canvas id="video-review-image" width="960" height="540" aria-label="回看画面与动作标注" hidden></canvas><div id="empty"><span class="empty-symbol" aria-hidden="true">＋</span><strong id="empty-title">开始摄像头，查看实时动作</strong><p id="empty-copy">固定机位 · 全身入镜 · 先站稳 2 秒</p></div></div>
+ <div class="stage-foot"><div class="legend" aria-label="状态颜色说明"><span><i class="dot"></i>目标待确认</span><span><i class="dot green"></i>动作目标</span><span><i class="dot yellow"></i>疑似 / 倒卧</span><span><i class="dot red"></i>已确认事件</span></div><span id="view-status">等待画面</span></div>
+ <div class="progress-wrap video-timeline" id="video-progress-wrap" hidden>
+  <span id="video-progress-text">等待视频分析</span><button id="video-review-exit" type="button" hidden>回到分析进度</button>
+  <input id="video-progress" aria-label="回看已分析位置" aria-describedby="video-review-hint" type="range" value="0" min="0" max="0" step="0.1" disabled>
+  <span id="video-review-hint">拖动进度条回看已分析片段。</span>
+ </div></section>
+<aside class="monitor-results" aria-label="实时识别结果">
+<section class="temporal-panel" aria-labelledby="yolo-title">
+ <div class="temporal-heading"><h2 id="yolo-title">YOLO</h2></div>
+ <div class="summary-grid">
  <section class="summary-card"><span>当前动作</span><strong id="action">等待观测</strong></section>
- <section class="summary-card"><span>移动</span><strong id="behavior-locomotion">等待观测</strong></section>
- <section class="summary-card"><span>转向</span><strong id="behavior-turning">等待观测</strong></section>
- <section id="fall-card" class="summary-card fall-card" data-state="unobservable"><span>跌倒状态</span><strong id="fall-state">等待观测</strong><small id="decision-context-summary">观测与跌倒证据：等待观测</small></section>
-</div>
+ <section id="fall-card" class="summary-card fall-card" data-state="unobservable"><span>跌倒状态</span><strong id="fall-state">等待观测</strong></section>
+ </div>
+</section>
 <section class="temporal-panel" id="temporal-panel" data-state="idle" aria-labelledby="temporal-title">
  <div class="temporal-heading"><h2 id="temporal-title">连续动作 · ST-GCN++</h2><div class="temporal-result"><strong id="temporal-action">等待连接</strong><span id="temporal-score"></span></div></div>
  <p id="temporal-status">正在检查时序模型。</p>
  <details><summary>查看时序依据</summary><div class="temporal-details"><ol id="temporal-top3"><li>暂无分类结果</li></ol><div><p id="temporal-window">历史窗口：—</p><p id="temporal-timing">观测与推理：—</p><p id="temporal-sampling">重采样：—</p><p id="temporal-model">NTU60 2D · COCO17 · joint</p></div></div><p>时序结果作为辅助证据；现有动作与跌倒判断保留。分类分数不代表跌倒风险，重采样不会增加真实观测。</p><p><a id="temporal-report" href="http://127.0.0.1:8805/" target="_blank" rel="noopener">查看十段视频与时序结果对照</a></p></details>
 </section>
+<section class="temporal-panel" id="agent-panel" data-state="idle" aria-labelledby="agent-title">
+ <div class="temporal-heading"><h2 id="agent-title">Agent · 决策模型</h2><span id="agent-result-scope" class="fine" hidden></span></div>
+ <p id="agent-status" role="status">等待连接</p>
+ <p id="agent-window" class="agent-window-note" hidden>来源窗口：—</p>
+ <p id="agent-probability-kind" hidden>当前概率不可用</p>
+ <div class="agent-answers">
+  <div class="agent-question"><h3>窗口内是否发生跌倒？</h3><p class="agent-options"><span>是 <strong id="agent-probability">—</strong></span></p></div>
+  <div class="agent-question"><h3>证据是否充分？</h3><p class="agent-options"><span>充分 <strong id="agent-sufficient">—</strong></span><span>不足 <strong id="agent-insufficient">—</strong></span><span>冲突 <strong id="agent-conflicting">—</strong></span></p></div>
+  <div class="agent-question"><h3>下一步怎么处理？</h3><p class="agent-options"><span>输出结果 <strong id="agent-emit_result">—</strong></span><span>继续观察 <strong id="agent-observe_more">—</strong></span><span>请求复核 <strong id="agent-request_review">—</strong></span></p></div>
+ </div>
+</section>
+</aside>
+</div>
+<details id="agent-details" class="panel" hidden><summary>Agent 决策历史与调试</summary><div class="panel-content">
+ <p id="agent-history-status" role="status"></p><ol id="agent-history" class="agent-history-list"><li>暂无持久决策结果</li></ol>
+ <div class="detail-values"><p id="agent-provider">provider / model：—</p><p id="agent-head">识别层：—</p><p id="agent-reason">原因：—</p><p id="agent-stage">资源阶段：—</p><p id="agent-run-id">run：—</p></div>
+ <div id="agent-feedback" class="controls" hidden><span id="agent-feedback-status" class="fine">人工反馈追加保存，不修改模型结果。</span><button type="button" data-agent-feedback="fall">标记跌倒</button><button type="button" data-agent-feedback="non_fall">标记非跌倒</button><button type="button" data-agent-feedback="uncertain">标记不确定</button></div>
+ <p class="fine">云端只接收白名单结构化摘要，不发送图像、视频、完整骨架或自由文本。分数未经校准；ST 与头共享 YOLO 骨架，不是独立传感器确认。</p>
+</div></details>
 <div id="recording-help" class="recording-strip"><div id="recording-status" role="status" aria-live="polite">原始视频与诊断可配套导出。</div></div>
 <section id="recordings-section" class="section" aria-labelledby="recordings-title" hidden><div class="section-head"><h2 id="recordings-title">待保存的录像</h2><small>原始视频 + 对应诊断</small></div><p class="fine">每段独立配对。点击下载 ZIP 后，请确认文件出现在下载文件夹。此处仅暂存在内存，刷新或关闭会清除；也可分别下载视频和 JSON。</p><div id="recordings-list"></div></section>
 <div class="tool-panels">
@@ -52,7 +111,7 @@
   <p id="capture-config-note" class="fine" role="status"></p>
  </div><p class="fine">录制原始画面与诊断，不含标注和声音。60 秒自动停止，完成后下载 ZIP 保存。</p></div></details>
 <details class="panel" id="diagnostics-panel"><summary>诊断与事件记录<span>详细结果 · 导出 JSON</span></summary><div class="panel-content">
- <div class="detail-values"><p>姿态：<b id="behavior-posture">等待观测</b></p><p id="behavior-posture-reason">等待当前人体证据</p><small id="behavior-transition">姿态转换：等待观测</small><p id="behavior-locomotion-reason">等待连续位移与脚步证据</p><p id="behavior-turning-reason">等待躯干方向变化证据</p><small id="behavior-path">路径：等待观测</small><p id="reason">等待观测</p><small id="raw">原始模型：— · 阶段：—</small><small id="resolved">协调后：— · 阶段：—</small><p id="fall-reason">开始测试后，等待连续姿态证据。</p><small id="fall-evidence">尚未确认跌倒目标</small><small id="fall-lifecycle">事件阶段：等待观测</small><small id="fall-event-ids">当前事件：— · 历史最近确认：—</small><small id="fall-source">来源：等待当前观测</small><small id="camera-quality">画面稳定性：等待观测</small></div>
+ <div class="detail-values"><p>姿态：<b id="behavior-posture">等待观测</b></p><p id="behavior-posture-reason">等待当前人体证据</p><small id="behavior-transition">姿态转换：等待观测</small><p>移动：<b id="behavior-locomotion">等待观测</b> · <span id="behavior-locomotion-reason">等待连续位移与脚步证据</span></p><p>转向：<b id="behavior-turning">等待观测</b> · <span id="behavior-turning-reason">等待躯干方向变化证据</span></p><small id="decision-context-summary">观测与跌倒证据：等待观测</small><small id="behavior-path">路径：等待观测</small><p id="reason">等待观测</p><small id="raw">原始模型：— · 阶段：—</small><small id="resolved">协调后：— · 阶段：—</small><p id="fall-reason">开始测试后，等待连续姿态证据。</p><small id="fall-evidence">尚未确认跌倒目标</small><small id="fall-lifecycle">事件阶段：等待观测</small><small id="fall-event-ids">当前事件：— · 历史最近确认：—</small><small id="fall-source">来源：等待当前观测</small><small id="camera-quality">画面稳定性：等待观测</small></div>
 <p id="fusion-candidate" class="fine" hidden></p>
 <p id="fall-temporal-evidence" class="fine" hidden></p>
 <section class="section" aria-labelledby="diagnostic-title">
@@ -65,11 +124,15 @@
 </div></details></div></main>
 <footer>画面仅在本机处理 <span>绿框表示动作目标，不代表安全判定</span></footer>
 <video id="source" muted playsinline preload="auto"></video>
+<video id="video-review-source" muted playsinline preload="auto"></video>
 <script src="/recording.js"></script>
 <script>
 'use strict';
 const token='__SESSION_TOKEN__';
 const $=id=>document.getElementById(id),video=$('source'),out=$('output'),ctx=out.getContext('2d');
+const reviewSource=$('video-review-source'),reviewImage=$('video-review-image');
+const videoReview={time:null,duration:0,url:null,latestIndex:-1,frames:new Map()};
+let agentClientSessionId='';try{agentClientSessionId=sessionStorage.getItem('fallpre-agent-client-session')||crypto.randomUUID();sessionStorage.setItem('fallpre-agent-client-session',agentClientSessionId)}catch{agentClientSessionId=crypto.randomUUID()}
 const capture=document.createElement('canvas'),cx=capture.getContext('2d');
 const displayMirror=true;
 const links=[[5,6],[5,7],[7,9],[6,8],[8,10],[5,11],[6,12],[11,12],[11,13],[13,15],[12,14],[14,16],[0,1],[0,2],[1,3],[2,4]];
@@ -77,10 +140,12 @@ const actionNames={standing:'站立',seated:'坐着',background:'背景（非静
 const phaseNames={seated:'坐姿',forward_lean:'前倾',rising:'上升',standing:'站立',descending:'下降',other:'其他',unknown:'未知'};
 const fallNames={normal:'未见跌倒',suspected:'疑似倒卧',confirmed:'跌倒已确认',unobservable:'无法判断'};
 const fallColors={normal:'#91efbf',suspected:'#ffd179',confirmed:'#ff8f91',unobservable:'#a8b5c1'};
-const diagnosticLimit=600,videoStep=.1;
+const diagnosticLimit=600,videoStep=.1,agentVideoCadenceMs=250;
 const diagnosticStageNames={input:'目标与关节输入',target:'目标关联',quality:'骨架质量',history:'连续证据',model:'模型判断',reconciliation:'动作与阶段协调',display:'显示规则',static_handoff:'静态状态衔接',visible_support:'可见坐姿支持',rise_evidence:'起身运动证据',seat_rise_handoff:'坐姿到起身衔接',frontal_bend:'本机位正面弯腰参照',daily_geometry:'日常姿态几何',daily_activity:'日常动作显示',accepted:'已接受',state:'状态判定'};
 let stream=null,run=0,sessionController=null,active=false,starting=false,ready=false,session=null,ticks=[],lastSource=-1,changes=[],lastLabel=null,fallChanges=[],lastFall=null,fileURL=null,refreshVersion=0;
 let modelOptions=[],serverStatus=null,diagnosticPaint=0,sourceGaps=[],timingSource=null,lastRenderedResult=null;
+let activeAgentRun=null,agentPollTimer=null,agentPollBusy=false,agentPollGeneration=0,agentAfterId=0,agentLatestDecisionId=null,agentFeedbackVersion=0;
+let latestAgentView=null,latestAgentError=null;
 function fallModeLabel(mode){return mode==='rgb'?'独立图像倒地检测':'骨架规则对照'}
 function safeActionPipeline(value){return fields(value,['id','label','revision'])}
 function updateSourceCadence(t){
@@ -144,10 +209,172 @@ function fmtTime(t){if(!Number.isFinite(t))return '—';const minutes=Math.floor
 function modelLabel(id){return modelOptions.find(m=>m.id===id)?.label||id||'—'}
 function message(text,error=false){$('message').textContent=text;$('message').classList.toggle('error',error)}
 function selectedSource(){return $('source-type').value}
+async function agentRequest(path,method='GET',body=null,keepalive=false,timeoutMs=5000){
+ const headers={'X-Session-Token':token,'X-Client-Session-Id':agentClientSessionId,'X-Agent-Origin':location.origin};
+ if(body!==null)headers['Content-Type']='application/json';
+ const controller=new AbortController(),timer=timeoutMs>0?setTimeout(()=>controller.abort(),timeoutMs):null;
+ let response;try{response=await fetch(path,{method,headers,credentials:'same-origin',keepalive,signal:controller.signal,...(body!==null?{body:JSON.stringify(body)}:{})})}
+ catch(error){if(controller.signal.aborted)throw Error('Agent 查询超时');throw error}finally{if(timer)clearTimeout(timer)}
+ let payload={};try{payload=await response.json()}catch{}
+ if(!response.ok)throw Error(payload.error||`Agent API ${response.status}`);return payload;
+}
+function stopAgentPolling(){agentPollGeneration++;if(agentPollTimer){clearInterval(agentPollTimer);agentPollTimer=null}}
+function agentStatusText(status){return ({pending:'等待云端结果',running:'等待云端结果',ready:'已获得可用决策',insufficient:'证据不足',unavailable:'决策不可用',stale:'结果已过期',skipped:'云端决策未启用',cancelled:'任务已取消',off:'云端决策未启用'})[status]||'等待观测'}
+function probabilityKindLabel(kind){return ({synthetic_fixture:'合成测试概率',uncalibrated_model_estimate:'未校准模型估计',calibrated_model_estimate:'已校准模型估计'})[kind]||'概率类型未知'}
+const AGENT_CHOICE_OPTIONS={
+ evidence_sufficiency:{sufficient:'充分',insufficient:'不足',conflicting:'冲突'},
+ next_step:{emit_result:'输出结果',observe_more:'继续观察',request_review:'请求复核'},
+};
+function formatAgentProbability(value){
+ return typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=1?`${(value*100).toFixed(1)}%`:'—';
+}
+function renderAgentProbabilities(result){
+ const answers=result?.provider_metadata?.answers;
+ $('agent-probability').textContent=formatAgentProbability(result?.fall_probability);
+ for(const [question,options] of Object.entries(AGENT_CHOICE_OPTIONS)){
+  for(const option of Object.keys(options)){
+   $(`agent-${option}`).textContent=formatAgentProbability(answers?.[question]?.probabilities?.[option]);
+  }
+ }
+}
+function renderAgentReadout(result,label,windowLabel){
+ renderAgentProbabilities(result);
+ $('agent-result-scope').textContent=label;
+ $('agent-result-scope').hidden=!result;
+ $('agent-probability-kind').textContent=result?probabilityKindLabel(result.probability_kind):'当前概率不可用';
+ $('agent-probability-kind').hidden=!result;
+ const window=result?.source_window;
+ $('agent-window').hidden=!window;
+ $('agent-window').textContent=window?`${windowLabel}：${fmtTime(window.start_s)} — ${fmtTime(window.end_s)}`:'来源窗口：—';
+}
+function renderAgentProjection(latest){
+ latestAgentView=latest;latestAgentError=null;
+ if(videoReview.time!==null)return;
+ const projection=latest?.projection||{},run=activeAgentRun;
+ const configuredProvider=latest?.provider_status||run?.provider_status||{};
+ const stopped=(latest?.run_status||run?.status)==='stopped';
+ const providerOff=(configuredProvider.provider||run?.provider)==='off';
+ const result=projection.current;
+ const current=!stopped&&!providerOff&&projection.current_applicable!==false
+  &&result?.status==='ready'&&result.current_applicable===true?result:null;
+ const historical=projection.historical_result;
+ const shown=current||(!providerOff&&historical?.status==='ready'?historical:null);
+ renderAgentReadout(shown,current?'当前决策':'最近有效决策 · 历史',current?'来源窗口':'历史窗口');
+ const pending=projection.pending_policy==='reuse_latest_compatible_ready_within_freshness';
+ const reasons=[...(projection.stale_reason_codes||[]),...(projection.latest_result?.reason_codes||[])];
+ const taskPending=['pending','running'].includes(projection.latest_task_status);
+ const latestStatus=projection.latest_result?.status||projection.provider_status;
+ const status=current?'ready':taskPending?'pending':latestStatus==='ready'?'stale':latestStatus;
+ const failure=Object.entries({
+  RUN_HTTP_BUDGET_EXHAUSTED:'云端请求额度已用完',
+  DEADLINE_EXCEEDED:'本次云端请求超时',
+  INVALID_RESPONSE_CONTRACT:'云端响应未通过校验',
+ }).find(([code])=>reasons.includes(code))?.[1];
+ $('agent-panel').dataset.state=stopped?'cancelled':providerOff?'off':status||'idle';
+ $('agent-status').textContent=stopped?(providerOff?'已停止 · 云端决策未启用':shown?'分析已结束':'已停止 · 本次无有效决策'):
+  providerOff?'云端决策未启用':current&&pending?'正在等待新窗口结果':
+  status==='unavailable'&&failure?failure:agentStatusText(status);
+ const provider=current||configuredProvider;
+ $('agent-provider').textContent=`provider / model：${provider.provider||run?.provider||'—'} / ${provider.model||run?.model||'—'}${configuredProvider.network_enabled?' · 网络已显式启用':''}`;
+ const stages=configuredProvider.stages||run?.stages||{},head=stages.fall_head||{};
+ const variants=head.variants||{},d=variants.st_geometry||{},c=variants.st_only||{};
+ $('agent-head').textContent=`识别层：${head.selected_variant||'cd'} · D ${d.weights_sha256?d.weights_sha256.slice(0,12):'不可用'} · C ${c.weights_sha256?c.weights_sha256.slice(0,12):'不可用'}`;
+ $('agent-reason').textContent='原因：'+(reasons.length?[...new Set(reasons)].join(' · '):'—');
+ $('agent-stage').textContent='资源阶段：'+Object.entries(stages).map(([key,value])=>`${key} ${value.status||'unknown'}`).join(' · ');
+ $('agent-run-id').textContent=`run：${run?.run_id||latest?.run_id||'—'} · ${latest?.run_status||run?.status||'—'}`;
+ const selected=current?.decision_id||projection.latest_result?.decision_id;
+ agentLatestDecisionId=selected||null;
+ if(selected){const item=agentHistoryCache.find(row=>row.decision_id===selected);agentFeedbackVersion=(latest?.feedback?.at(-1)?.version||item?.feedback?.at(-1)?.version||0)}
+ $('agent-feedback').hidden=!selected;
+ if(selected)$('agent-feedback-status').textContent=`反馈版本 ${agentFeedbackVersion} · 追加保存，不修改模型原结果。`;
+}
+let agentHistoryCache=[];
+function renderAgentHistory(items){
+ for(const item of items){if(agentHistoryCache.some(existing=>existing.cursor===item.cursor))continue;agentHistoryCache.push(item)}
+ agentHistoryCache.sort((a,b)=>a.cursor-b.cursor);
+ const nodes=agentHistoryCache.map(item=>{const row=document.createElement('li'),title=document.createElement('strong'),detail=document.createElement('small'),result=item.result||{},window=result.source_window||{};
+  const probability=typeof result.fall_probability==='number'&&result.probability_kind
+   ?`${(result.fall_probability*100).toFixed(1)}% · ${probabilityKindLabel(result.probability_kind)}`:'概率 —';
+  title.textContent=`#${item.cursor} · ${agentStatusText(result.status)} · ${probability}`;
+  const metadata=result.provider_metadata||{},usage=metadata.input_tokens==null?'用量未知':`${metadata.input_tokens} 输入 tokens`;
+  const kind=result.probability_kind?probabilityKindLabel(result.probability_kind):'概率类型 —';
+  detail.textContent=`provider ${result.provider||'未知'} · ${kind} · 源 ${fmtTime(item.source_time)} · 窗口 ${fmtTime(window.start_s)}–${fmtTime(window.end_s)} · request_id ${metadata.request_id||'—'} · ${usage} · ${item.attempt_history?.length||0} attempt`;
+  row.append(title,detail);
+  const answers=metadata.answers;
+  if(answers){
+   for(const [question,options] of Object.entries(AGENT_CHOICE_OPTIONS)){
+    const probabilities=answers[question]?.probabilities;
+    if(!probabilities)continue;
+    const distribution=document.createElement('small');
+    distribution.textContent=Object.entries(options).map(([key,label])=>`${label} ${formatAgentProbability(probabilities[key])}`).join(' · ');
+    row.append(distribution);
+   }
+  }
+  return row});
+ $('agent-history').replaceChildren(...(nodes.length?nodes:[Object.assign(document.createElement('li'),{textContent:'暂无持久决策结果'})]));
+}
+function clearAgentDisplay(){
+ renderAgentProbabilities(null);
+ $('agent-result-scope').hidden=true;
+ $('agent-probability-kind').hidden=true;$('agent-window').hidden=true;
+ $('agent-probability-kind').textContent='当前概率不可用';
+ $('agent-window').textContent='来源窗口：—';$('agent-provider').textContent='provider / model：—';
+ $('agent-head').textContent='识别层：—';$('agent-reason').textContent='原因：—';
+ $('agent-stage').textContent='资源阶段：—';$('agent-run-id').textContent='run：—';
+ $('agent-feedback').hidden=true;
+}
+function invalidateCurrentAgent(reason){
+ latestAgentView=null;latestAgentError=reason;
+ if(videoReview.time!==null)return;
+ clearAgentDisplay();
+ $('agent-panel').dataset.state='unavailable';
+ $('agent-reason').textContent='原因：查询暂不可用';
+ $('agent-status').textContent='Agent 查询暂不可用 · '+reason;agentLatestDecisionId=null;
+}
+async function boundedAgentRequest(path){
+ let timer;try{return await Promise.race([agentRequest(path,'GET',null,false,2200),new Promise((_,reject)=>{
+  timer=setTimeout(()=>reject(Error('Agent 查询超过 2.2 秒')),2200);
+ })])}finally{if(timer)clearTimeout(timer)}
+}
+async function pollAgentRun(runRef=activeAgentRun,generation=agentPollGeneration){
+ if(!runRef||agentPollBusy===generation)return;agentPollBusy=generation;
+ const current=()=>generation===agentPollGeneration&&activeAgentRun?.run_id===runRef.run_id;
+ try{
+  const latestTask=boundedAgentRequest(`/api/v1/agent/runs/${runRef.run_id}/latest`).then(latest=>{
+   if(current())renderAgentProjection(latest);
+  }).catch(error=>{if(current())invalidateCurrentAgent(error.message)});
+  const historyTask=boundedAgentRequest(`/api/v1/agent/runs/${runRef.run_id}/decisions?after_id=${agentAfterId}&limit=50`).then(page=>{
+   if(!current())return;agentAfterId=page.next_after_id||agentAfterId;renderAgentHistory(page.items||[]);
+   if(videoReview.time!==null&&page.items?.length)renderVideoReviewDecision();
+   $('agent-history-status').textContent='';
+   if(page.items?.length){const last=page.items.at(-1);if(last.feedback?.length)agentFeedbackVersion=last.feedback.at(-1).version||0}
+  }).catch(error=>{if(current())$('agent-history-status').textContent='历史查询暂不可用；已保留此前显示的历史记录 · '+error.message});
+  await Promise.all([latestTask,historyTask]);
+ }
+ finally{if(agentPollBusy===generation)agentPollBusy=false}
+}
+function beginAgentPolling(runRef){
+ stopAgentPolling();agentAfterId=0;agentHistoryCache=[];agentLatestDecisionId=null;agentFeedbackVersion=0;renderAgentHistory([]);
+ clearAgentDisplay();
+ $('agent-panel').dataset.state='idle';
+ $('agent-status').textContent=runRef?.provider_status?.provider==='off'?'云端决策未启用':'等待观测';
+ $('agent-history-status').textContent='';
+ const generation=agentPollGeneration;pollAgentRun(runRef,generation);agentPollTimer=setInterval(()=>pollAgentRun(runRef,generation),500);
+}
+async function submitAgentFeedback(label){
+ const decisionId=agentLatestDecisionId,runId=activeAgentRun?.run_id;if(!decisionId||!runId)return;
+ try{const receipt=await agentRequest(`/api/v1/agent/decisions/${decisionId}/feedback`,'POST',{
+   run_id:runId,request_id:crypto.randomUUID(),expected_version:agentFeedbackVersion,label});
+  agentFeedbackVersion=receipt.version;$('agent-feedback-status').textContent=`反馈已保存 · 版本 ${receipt.version} · 原模型结果未修改`;pollAgentRun(activeAgentRun,agentPollGeneration);
+ }catch(error){$('agent-feedback-status').textContent='反馈未保存：'+error.message}
+}
 function controls(){
  const busy=active||starting||stopping,videoMode=selectedSource()==='video';
  for(const id of ['source-type','pose-model','fall-mode','camera','refresh','video-file','capture-segment'])$(id).disabled=busy||(['pose-model','fall-mode'].includes(id)&&!ready);
  $('start').disabled=busy||!ready||!modelOptions.some(m=>m.id===$('pose-model').value&&m.available)||(videoMode&&!$('video-file').files.length);
+ $('start-agent').hidden=!serverStatus?.agent;$('stop-agent').hidden=!serverStatus?.agent;
+ $('start-agent').disabled=busy||!ready||!serverStatus?.agent||!modelOptions.some(m=>m.id===$('pose-model').value&&m.available)||(videoMode&&!$('video-file').files.length);
+ $('stop-agent').disabled=!(activeAgentRun&&activeAgentRun.status==='active'&&(active||starting))||stopping;
  $('stop').disabled=!(active||starting)||stopping;
  $('reset-view').disabled=!active||videoMode||Boolean(recording)||starting||stopping;
  $('stop').textContent=stopping?'正在整理…':recording?'停止并整理录像':'停止';
@@ -355,6 +582,8 @@ function diagnosticRows(id,rows,columns,empty){
  if(!nodes.length){const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=columns;cell.textContent=empty;row.append(cell);nodes.push(row)}$(id).replaceChildren(...nodes);
 }
 function resetResults(){
+ resetVideoReview();
+ latestAgentView=null;latestAgentError=null;
  lastRenderedResult=null;
  renderFusion(null);
  renderFallTemporal(null);
@@ -509,8 +738,8 @@ function boxesOverlap(a,b){
  const overlap=Math.max(0,Math.min(a[2],b[2])-Math.max(a[0],b[0]))*Math.max(0,Math.min(a[3],b[3])-Math.max(a[1],b[1]));
  return overlap/(area(a)+area(b)-overlap||1);
 }
-function presentationOverlays(result){
- const state=currentFallState(result),base=frameOverlays(result),labels=compactActionLabel(result);
+function presentationOverlays(result,base=frameOverlays(result)){
+ const state=currentFallState(result),labels=compactActionLabel(result);
  const rows=base.filter(row=>row.role==='action'||row.role==='raw'
     ||row.role==='fall'&&row.drawBox!==false&&!['suspected','confirmed'].includes(state))
   .map(row=>row.role==='action'?{...row,...labels}:{...row,label:row.role==='raw'?'目标待确认':fallDisplayText(result,state),lines:[]});
@@ -537,12 +766,13 @@ function overlayPosition(box,width,height,frameWidth,frameHeight,mirror=false){
  const y=Math.max(0,Math.min(above?top-height-4:top+3,frameHeight-height));
  return {x,y,placement:above?'above':'inside-top'};
 }
-function draw(frame,result){
- out.width=frame.width;out.height=frame.height;const overlays=presentationOverlays(result);
- ctx.save();if(displayMirror){ctx.translate(out.width,0);ctx.scale(-1,1)}ctx.drawImage(frame,0,0);
+function drawAnnotatedFrame(frame,out,width,height,skeletons,overlays){
+ const ctx=out.getContext('2d');
+ out.width=width;out.height=height;
+ ctx.save();if(displayMirror){ctx.translate(out.width,0);ctx.scale(-1,1)}ctx.drawImage(frame,0,0,width,height);
  // Keep v18's target association and gray/green/alert colors. Label compaction
  // must not hide candidates or change the measured skeleton's status.
- for(const row of frameOverlays(result)){
+ for(const row of skeletons){
   if(row.skeleton===false)continue;
   const p=row.person;
   const points=Array.isArray(p.keypoints)?p.keypoints:[];
@@ -555,7 +785,13 @@ function draw(frame,result){
  const fontSize=Math.max(17,out.width/48),lineHeight=fontSize+7;ctx.font=`600 ${fontSize}px system-ui`;ctx.textBaseline='top';
  overlays.forEach(row=>{const p=row.person,labels=[row.label,...row.lines],w=Math.min(out.width,Math.max(...labels.map(label=>ctx.measureText(label).width))+14),h=labels.length*lineHeight+4,{x,y}=overlayPosition(p.box,w,h,out.width,out.height,displayMirror);
   ctx.fillStyle='rgba(7,12,16,.88)';ctx.fillRect(x,y,w,h);ctx.fillStyle=row.color;labels.forEach((label,i)=>ctx.fillText(label,x+7,y+4+i*lineHeight,w-14));
- });$('empty').style.display='none';
+ });
+}
+function draw(frame,result){
+ const skeletons=frameOverlays(result),overlays=presentationOverlays(result,skeletons);
+ drawAnnotatedFrame(frame,out,frame.width,frame.height,skeletons,overlays);
+ $('empty').style.display='none';
+ return {skeletons,overlays};
 }
 function visibilityHint(result){
  const p=result.persons?.[result.action?.target_index];if(!p)return '起坐入镜检查：目标尚未确认';const good=i=>{const k=p.keypoints[i];return k&&k[2]>=.3&&k.every(Number.isFinite)&&k[0]>0&&k[0]<result.width&&k[1]>0&&k[1]<result.height};return '起坐可靠点：'+[['肩',[5,6]],['髋',[11,12]],['膝',[13,14]],['踝',[15,16]]].map(([name,ids])=>`${name} ${ids.filter(good).length}/2`).join(' · ');
@@ -605,11 +841,24 @@ async function resetView(){
 }
 function renderResult(result,t,elapsed,clientTiming=null){
  lastRenderedResult=result;
- renderLiveSetup(result);renderViewStatus(result);renderDecisionContext(result);renderBehavior(result.behavior);renderTemporal(result.temporal);renderRiskPoints(result.risk_points,t);draw(capture,result);const now=performance.now();ticks.push(now);if(ticks.length>20)ticks.shift();$('fps').textContent=ticks.length>1?((ticks.length-1)*1000/(now-ticks[0])).toFixed(1):'测量中';$('inference').textContent=(number(result.inference_ms)+number(result.action_ms)).toFixed(0);$('latency').textContent=elapsed.toFixed(0);$('people').textContent=(result.persons||[]).length;$('source-time').textContent='源时间 '+fmtTime(t);
- const a=result.action||{},f=result.fall||{},fallState=currentFallState(result);$('action').textContent=a.text||actionNames[a.label]||'未知';$('reason').textContent=a.reason||'等待证据';$('raw').textContent=`原始模型：${actionNames[a.raw_label]||a.raw_label||'—'} · 阶段：${phaseNames[a.phase]||a.phase||'—'}`;
+ renderLiveSetup(result);renderDecisionContext(result);renderBehavior(result.behavior);renderRiskPoints(result.risk_points,t);
+ const annotations=draw(capture,result);
+ const a=result.action||{},f=result.fall||{},fallState=currentFallState(result);
+ const visualCards={action:a.text||actionNames[a.label]||'未知',fallState,
+  fallText:fallDisplayText(result,fallState),temporal:result.temporal};
+ if(videoReview.time===null){
+  renderViewStatus(result);
+  renderVisualCards(visualCards);
+  $('source-time').textContent='源时间 '+fmtTime(t);
+ }
+ if(session?.sourceType==='video'&&videoReview.duration>0){
+  rememberVideoFrame(t,{...visualCards,temporal:safeTemporal(result.temporal),...annotations,width:capture.width,height:capture.height});
+ }
+ const now=performance.now();ticks.push(now);if(ticks.length>20)ticks.shift();$('fps').textContent=ticks.length>1?((ticks.length-1)*1000/(now-ticks[0])).toFixed(1):'测量中';$('inference').textContent=(number(result.inference_ms)+number(result.action_ms)).toFixed(0);$('latency').textContent=elapsed.toFixed(0);$('people').textContent=(result.persons||[]).length;
+ $('reason').textContent=a.reason||'等待证据';$('raw').textContent=`原始模型：${actionNames[a.raw_label]||a.raw_label||'—'} · 阶段：${phaseNames[a.phase]||a.phase||'—'}`;
  const resolvedLabel=a.resolved_label??a.raw_label,resolvedPhase=a.resolved_phase??a.phase;$('resolved').textContent=`协调后：${actionNames[resolvedLabel]||resolvedLabel||'—'} · 阶段：${phaseNames[resolvedPhase]||resolvedPhase||'—'}`;
  const observation=result.fall_observation,fallEpoch=observation?.selection?.target_epoch,recovery=observation?.recovery,hasFallPerson=Boolean(fallPerson(result));
- $('fall-card').dataset.state=fallState;$('fall-state').textContent=fallDisplayText(result,fallState);$('fall-reason').textContent=f.reason||'跌倒状态尚未返回';$('fall-evidence').textContent=`${fallEpoch!=null?`跌倒目标 F#${fallEpoch}`:'跌倒目标未确认'}${fallState==='suspected'?`${Number.isFinite(f.candidate_since_s)?` · ${fmtTime(f.candidate_since_s)} 开始疑似`:''}${Number.isFinite(f.candidate_duration_s)?` · 已观测支持证据 ${f.candidate_duration_s.toFixed(1)} 秒`:''}`:''}${fallState==='confirmed'&&Number.isFinite(f.confirmed_at_s)?` · ${fmtTime(f.confirmed_at_s)} 已确认`:''}`;
+ $('fall-reason').textContent=f.reason||'跌倒状态尚未返回';$('fall-evidence').textContent=`${fallEpoch!=null?`跌倒目标 F#${fallEpoch}`:'跌倒目标未确认'}${fallState==='suspected'?`${Number.isFinite(f.candidate_since_s)?` · ${fmtTime(f.candidate_since_s)} 开始疑似`:''}${Number.isFinite(f.candidate_duration_s)?` · 已观测支持证据 ${f.candidate_duration_s.toFixed(1)} 秒`:''}`:''}${fallState==='confirmed'&&Number.isFinite(f.confirmed_at_s)?` · ${fmtTime(f.confirmed_at_s)} 已确认`:''}`;
  $('fall-lifecycle').textContent='事件阶段：'+fallLifecycleText(result,fallState);
  $('fall-event-ids').textContent=`当前事件：${fallState==='confirmed'?(f.current_event_id??f.event_id??'—'):'—'} · 历史最近确认：${f.last_confirmed_event_id??f.event_id??'—'}`;
  $('fall-source').textContent='来源：'+(hasFallPerson?(observation.source==='rgb_fall'?'独立图像检测 · 无骨架补造':observation.source==='recovered'?'当前帧补充识别':'当前帧骨架识别'):'当前不可见')+(recovery?.executed?` · 补检 ${number(recovery.elapsed_ms).toFixed(0)} ms`:'');
@@ -620,6 +869,114 @@ function renderResult(result,t,elapsed,clientTiming=null){
  if(a.label!==lastLabel){changes.push(`${fmtTime(t)} ${a.text||actionNames[a.label]||'未知'}`);if(changes.length>8)changes.shift();lastLabel=a.label;$('history').textContent='起坐状态变化：'+changes.join(' → ')}
  const fallKey=fallState+':'+(fallEpoch??'none')+':'+(f.lifecycle||'')+':'+(f.current_event_id||'');if(fallKey!==lastFall){fallChanges.push(`${fmtTime(t)} ${fallDisplayText(result,fallState)} · ${fallLifecycleText(result,fallState)}${fallEpoch!=null?` F#${fallEpoch}`:''}`);if(fallChanges.length>8)fallChanges.shift();lastFall=fallKey;$('fall-history').textContent='跌倒状态变化：'+fallChanges.join(' → ')}
  updateDiagnostics(result,t,clientTiming);
+}
+function renderVisualCards({action,fallState,fallText,temporal}){
+ $('action').textContent=action;
+ $('fall-card').dataset.state=fallState;
+ $('fall-state').textContent=fallText;
+ renderTemporal(temporal);
+}
+function resetVideoReview(){
+ videoReview.time=null;videoReview.duration=0;videoReview.latestIndex=-1;videoReview.frames.clear();
+ if(videoReview.url){
+  videoReview.url=null;
+  reviewSource.removeAttribute('src');
+  reviewSource.load();
+ }
+ reviewImage.hidden=true;
+ out.style.visibility='';
+ $('video-review-exit').hidden=true;
+ const slider=$('video-progress');
+ slider.max='0';slider.value='0';slider.disabled=true;
+ $('video-review-hint').textContent='拖动进度条回看已分析片段。';
+}
+function rememberVideoFrame(t,frame){
+ const index=Math.round(t/videoStep);
+ videoReview.frames.set(index,{...frame,time:t});
+ videoReview.latestIndex=index;
+ const slider=$('video-progress');
+ slider.disabled=index<1;
+ if(videoReview.time===null)slider.value=String(index*videoStep);
+}
+function renderVideoReviewDecision(){
+ const t=videoReview.time;
+ if(t===null)return;
+ let selected=null;
+ if(session?.agentEnabled){
+  for(const item of agentHistoryCache){
+   const result=item.result,window=result?.source_window;
+   if(result?.status!=='ready'||!Number.isFinite(result.fall_probability)
+     ||!Number.isFinite(window?.start_s)||!Number.isFinite(window?.end_s)
+     ||t<window.start_s-1e-6||t>window.end_s+1e-6)continue;
+   if(!selected||item.source_time>selected.source_time
+     ||(item.source_time===selected.source_time&&item.cursor>selected.cursor))selected=item;
+  }
+ }
+ const result=selected?.result||null;
+ renderAgentReadout(result,'回看 · 历史决策','历史窗口');
+ $('agent-panel').dataset.state=result?'ready':'idle';
+ $('agent-status').textContent=result?'此处已有决策':'此处暂无决策';
+ $('agent-feedback').hidden=true;
+}
+function paintVideoReviewFrame(){
+ const t=videoReview.time;
+ if(t===null||reviewSource.seeking||reviewSource.readyState<2||Math.abs(reviewSource.currentTime-t)>0.005)return;
+ const frame=videoReview.frames.get(Math.round(t/videoStep));
+ if(!frame)return;
+ drawAnnotatedFrame(reviewSource,reviewImage,frame.width,frame.height,frame.skeletons,frame.overlays);
+ reviewImage.hidden=false;
+ $('view-status').textContent='回看已分析画面';
+}
+function seekVideoReviewSource(){
+ if(videoReview.time===null||reviewSource.readyState<1)return;
+ if(Math.abs(reviewSource.currentTime-videoReview.time)>0.005)reviewSource.currentTime=videoReview.time;
+ else paintVideoReviewFrame();
+}
+function reviewVideoAt(position){
+ if(!fileURL||!Number.isFinite(position)||videoReview.latestIndex<0)return;
+ const index=Math.max(0,Math.min(videoReview.latestIndex,Math.round(position/videoStep)));
+ const frame=videoReview.frames.get(index);
+ if(!frame)return;
+ const slider=$('video-progress');
+ slider.value=String(index*videoStep);
+ videoReview.time=frame.time;
+ reviewImage.hidden=true;
+ out.style.visibility='hidden';
+ $('video-review-exit').hidden=false;
+ $('video-review-hint').textContent=`正在回看 ${fmtTime(frame.time)}`;
+ $('source-time').textContent='回看时间 '+fmtTime(frame.time);
+ $('view-status').textContent='正在载入回看画面';
+ renderVisualCards(frame);
+ renderVideoReviewDecision();
+ if(videoReview.url!==fileURL){
+  videoReview.url=fileURL;
+  reviewSource.src=fileURL;
+  reviewSource.load();
+ }else seekVideoReviewSource();
+}
+function exitVideoReview(){
+ if(videoReview.time===null)return;
+ videoReview.time=null;
+ reviewImage.hidden=true;
+ out.style.visibility='';
+ $('video-review-exit').hidden=true;
+ $('video-review-hint').textContent='拖动进度条回看已分析片段。';
+ const current=videoReview.frames.get(videoReview.latestIndex);
+ if(current){
+  $('video-progress').value=String(videoReview.latestIndex*videoStep);
+  $('source-time').textContent='源时间 '+fmtTime(current.time);
+  renderVisualCards(current);
+  if(!active)renderTemporal(null,'已停止');
+  if(lastRenderedResult)renderViewStatus(lastRenderedResult);
+ }
+ if(latestAgentView)renderAgentProjection(latestAgentView);
+ else if(latestAgentError)invalidateCurrentAgent(latestAgentError);
+ else {
+  clearAgentDisplay();
+  $('agent-panel').dataset.state='idle';
+  $('agent-status').textContent=!serverStatus?.agent?'Agent 未启用':
+   serverStatus.agent.provider==='off'?'云端决策未启用':'等待开始 Agent 分析';
+ }
 }
 function waitVideoEvent(name,signal,timeout=15000){
  return new Promise((resolve,reject)=>{let timer;const clean=()=>{clearTimeout(timer);video.removeEventListener(name,done);video.removeEventListener('error',failed);signal.removeEventListener('abort',aborted)};const done=()=>{clean();resolve()},failed=()=>{clean();reject(new Error('无法解码视频，请选择浏览器支持的 MP4 或 WebM 文件'))},aborted=()=>{clean();reject(new DOMException('测试已停止','AbortError'))};if(signal.aborted){aborted();return}video.addEventListener(name,done,{once:true});video.addEventListener('error',failed,{once:true});signal.addEventListener('abort',aborted,{once:true});timer=setTimeout(()=>{clean();reject(new Error('等待视频画面超时，请重新选择或检查视频文件'))},timeout)});
@@ -639,7 +996,9 @@ async function performInference(id,t,pending){
   timing.input_width=capture.width;timing.input_height=capture.height;
   const blob=await new Promise(resolve=>capture.toBlob(resolve,'image/jpeg',.85));if(run!==id||request.status==='timeout_on_stop'||(!active&&!stopping)){if(request.status!=='timeout_on_stop')request.status='cancelled';return false}if(!blob)throw Error('画面转换失败，请重新开始');
   const currentSession=session;request.status='pending';request.sent_performance_ms=performance.now();
-  const response=await fetch('/infer',{method:'POST',headers:{'Content-Type':'image/jpeg','X-Session-Token':token,'X-Stream-Id':currentSession.streamId,'X-Source-Time':String(t),'X-Pose-Model':currentSession.modelId,'X-Source-Type':currentSession.sourceType,'X-Fall-Mode':currentSession.fallMode||'pose'},body:blob,signal:sessionController.signal});
+  const headers={'Content-Type':'image/jpeg','X-Session-Token':token,'X-Stream-Id':currentSession.streamId,'X-Source-Time':String(t),'X-Pose-Model':currentSession.modelId,'X-Source-Type':currentSession.sourceType,'X-Fall-Mode':currentSession.fallMode||'pose'};
+  if(currentSession.agentRunId){headers['X-Agent-Run-Id']=currentSession.agentRunId;headers['X-Client-Session-Id']=agentClientSessionId}
+  const response=await fetch('/infer',{method:'POST',headers,body:blob,signal:sessionController.signal});
   const result=await response.json();if(run!==id||request.status==='timeout_on_stop')return false;if(!response.ok)throw Error(result.error||'本地推理请求失败');
   timing.response_performance_ms=performance.now();timing.latency_ms=timing.response_performance_ms-startedAt;Object.assign(request,{status:'returned',response_performance_ms:timing.response_performance_ms,latency_ms:timing.latency_ms});
   lastSource=t;renderResult(result,t,timing.latency_ms,timing);return true;
@@ -655,11 +1014,29 @@ async function videoLoop(id,duration){
   if(Math.abs(video.currentTime-target)>.00001){const seeked=waitVideoEvent('seeked',sessionController.signal);video.currentTime=target;await seeked}
   if(!active||run!==id)return;
   await inferFrame(id,video.currentTime);if(!active||run!==id)return;
-  $('video-progress').value=(index+1)/count;$('video-progress-text').textContent=`${fmtTime(target)} / ${fmtTime(duration)} · ${index+1} / ${count} 次取样`;
+  if(session.agentEnabled){
+   await waitForVideoDecision(id,lastRenderedResult?.agent);
+   if(!active||run!==id)return;
+  }
+  $('video-progress-text').textContent=`已分析至 ${fmtTime(target)} / ${fmtTime(duration)} · ${index+1} / ${count} 次取样`;
   message(`正在分析本地视频 · ${Math.round((index+1)/count*100)}% · 判断使用视频源时间。`);
  }
- if(active&&run===id){stop('视频分析完成。结果已保留，可导出诊断或更换模型重新分析。','已完成 · 结果保留');$('video-progress').value=1}
+ if(active&&run===id){stop('视频分析完成。可拖动进度条回看或导出诊断。','已完成 · 结果保留')}
  }catch(error){handleFailure(error,id)}
+}
+async function waitForVideoDecision(id,receipt){
+ const provider=activeAgentRun?.provider_status;
+ const waitForTask=provider?.provider==='aliyun'&&receipt?.task_id
+  &&receipt.trace?.temporal_status==='ready'&&receipt.trace?.head_status==='ready';
+ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ if(!waitForTask){await pause(agentVideoCadenceMs);return}
+ // Keep this source window current until its durable task has a terminal result.
+ const timeoutMs=(provider.decision_timeout_s??3)*1000+3000;
+ const deadline=performance.now()+timeoutMs;
+ while(active&&run===id&&performance.now()<deadline){
+  if(agentHistoryCache.some(row=>row.task_id===receipt.task_id))return;
+  await pause(150);
+ }
 }
 function stop(note='已停止。画面与本次结果已保留，摄像头已释放。',state='已停止 · 结果保留',reason='user'){
  if(stopping)return finishingRecording;
@@ -667,23 +1044,41 @@ function stop(note='已停止。画面与本次结果已保留，摄像头已释
  cleanupSession(note,state);return Promise.resolve();
 }
 function cleanupSession(note,state){
- const closing=session?.streamId;run++;active=false;starting=false;sessionController?.abort();sessionController=null;
+ const closing=session?.streamId,closingAgentRunId=session?.agentRunId,closingAgentRun=activeAgentRun;run++;active=false;starting=false;sessionController?.abort();sessionController=null;
  video.pause();stream?.getTracks().forEach(track=>{track.onended=null;track.stop()});stream=null;video.srcObject=null;
- if(closing){closingRequest=fetch('/stop',{method:'POST',headers:{'X-Session-Token':token,'X-Stream-Id':closing},keepalive:true}).catch(()=>{});if(session)session.streamId=null}
- if(diagnosticState.started_at&&!diagnosticState.ended_at)diagnosticState.ended_at=new Date().toISOString();paintDiagnosticSummary();renderTemporal(null,'已停止');$('session-state').textContent=state;
+ if(closing){
+  if(closingAgentRunId){
+   if(activeAgentRun?.run_id===closingAgentRunId)activeAgentRun.status='stopped';stopAgentPolling();const generation=agentPollGeneration;
+   closingRequest=agentRequest(`/api/v1/agent/runs/${closingAgentRunId}/stop`,'POST',{},true)
+    .then(()=>pollAgentRun(closingAgentRun,generation)).catch(()=>fetch('/stop',{method:'POST',headers:{'X-Session-Token':token,'X-Stream-Id':closing},keepalive:true}).catch(()=>{}));
+  }else closingRequest=fetch('/stop',{method:'POST',headers:{'X-Session-Token':token,'X-Stream-Id':closing},keepalive:true}).catch(()=>{});
+  if(session)session.streamId=null;
+ }
+ if(diagnosticState.started_at&&!diagnosticState.ended_at)diagnosticState.ended_at=new Date().toISOString();paintDiagnosticSummary();if(videoReview.time===null)renderTemporal(null,'已停止');$('session-state').textContent=state;
  if(diagnosticState.received)$('diagnostic-status').textContent=`结果已保留 · ${diagnosticState.received} 次观测 · 可导出诊断`;controls();message(note);
 }
 function handleFailure(error,id){if(run!==id||stopping||error.name==='AbortError')return;stop('测试中断：'+error.message+'。可重新开始。','测试中断 · 结果保留',starting?'startup_error':'inference_error');message('测试中断：'+error.message+'。可重新开始。',true)}
-async function start(recordRequested=false){
+async function start(recordRequested=false,withAgent=false){
  if(active||starting||stopping||!ready)return;const sourceType=selectedSource(),file=$('video-file').files[0];if(sourceType==='video'&&!file){message('请先选择本地视频。',true);return}
+ if(withAgent&&!serverStatus?.agent){message('本地服务未启用 Agent API。请使用 --agent-enabled 启动服务。',true);return}
  if(recordRequested&&(sourceType!=='camera'||!globalThis.MediaRecorder||!globalThis.FallpreRecording)){message('当前输入或浏览器不支持录像。',true);return}
  if(recordRequested&&captureConfigProblem()){message(captureConfigProblem(),true);return}
- const id=++run;starting=true;sessionController=new AbortController();session={streamId:crypto.randomUUID(),capturePlan:recordRequested?snapshotCapturePlan():null,recordRequested,sourceType,sourceName:sourceType==='video'?file.name:($('camera').selectedOptions[0]?.textContent||'默认摄像头'),modelId:$('pose-model').value,fallMode:$('fall-mode').value};controls();resetResults();$('session-state').textContent='正在准备输入';message(sourceType==='video'?'正在读取本地视频…':'正在请求摄像头…');
+ const id=++run;starting=true;sessionController=new AbortController();session={streamId:crypto.randomUUID(),agentRunId:null,agentEnabled:withAgent,capturePlan:recordRequested?snapshotCapturePlan():null,recordRequested,sourceType,sourceName:sourceType==='video'?file.name:($('camera').selectedOptions[0]?.textContent||'默认摄像头'),modelId:$('pose-model').value,fallMode:$('fall-mode').value};controls();resetResults();$('session-state').textContent='正在准备输入';message(sourceType==='video'?'正在读取本地视频…':'正在请求摄像头…');
+ if(!withAgent){
+  clearAgentDisplay();
+  $('agent-panel').dataset.state='idle';
+  $('agent-status').textContent='本次仅分析画面';
+ }
  try{
   await closingRequest;if(run!==id)return;
+  if(withAgent){
+   const created=await agentRequest('/api/v1/agent/runs','POST',{request_id:crypto.randomUUID(),source_type:sourceType});
+   if(run!==id){agentRequest(`/api/v1/agent/runs/${created.run_id}/stop`,'POST',{},true).catch(()=>{});return}
+   activeAgentRun=created;session.agentRunId=created.run_id;session.streamId=created.stream_id;beginAgentPolling(created);
+  }
   video.pause();video.srcObject=null;video.removeAttribute('src');
   if(sourceType==='camera'){
-   if(!navigator.mediaDevices?.getUserMedia)throw Error('浏览器无法访问摄像头，请在 Mac 的 Safari 或 Chrome 打开本机地址');
+   if(!navigator.mediaDevices?.getUserMedia)throw Error('浏览器无法访问摄像头，请在 Mac 的 Safari 打开本机地址');
    const chosen=$('camera').value,opened=await navigator.mediaDevices.getUserMedia({audio:false,video:{width:{ideal:960},height:{ideal:540},...(chosen?{deviceId:{exact:chosen}}:{})}});
    if(run!==id){opened.getTracks().forEach(t=>t.stop());return}stream=opened;video.srcObject=stream;await video.play();if(run!==id)return;
    stream.getVideoTracks()[0].onended=()=>{if(run===id)stop('摄像头连接已结束。结果已保留，请重新连接后开始。','输入已断开 · 结果保留','track_ended')};diagnosticState.source.name=stream.getVideoTracks()[0].label||session.sourceName;$('camera-status').textContent='当前输入：'+diagnosticState.source.name;refreshCameras(false);
@@ -691,6 +1086,8 @@ async function start(recordRequested=false){
    if(!fileURL)fileURL=URL.createObjectURL(file);const loaded=waitVideoEvent('loadeddata',sessionController.signal);video.src=fileURL;video.load();await loaded;if(run!==id)return;
    if(!Number.isFinite(video.duration)){const end=waitVideoEvent('seeked',sessionController.signal);video.currentTime=1e9;await end;if(run!==id)return;const back=waitVideoEvent('seeked',sessionController.signal);video.currentTime=0;await back;if(run!==id)return}
    if(!Number.isFinite(video.duration)||video.duration<=0)throw Error('无法读取视频时长，请选择完整的视频文件');diagnosticState.source.duration_s=video.duration;
+   videoReview.duration=video.duration;
+   $('video-progress').max=String((Math.ceil(video.duration/videoStep)-1)*videoStep);
   }
   if(run!==id)return;if(recordRequested)startRecording();starting=false;active=true;controls();$('session-state').textContent=`${sourceType==='video'?'视频分析中':'实时观测中'} · ${modelLabel(session.modelId)}`;
   sourceType==='video'?videoLoop(id,video.duration):cameraLoop(id);
@@ -707,25 +1104,35 @@ async function refreshCameras(authorize=false){
 }
 function isPhoneCamera(label){return /iphone|连续互通|continuity|android|droidcam|iriun|camo|epoccam/i.test(label||'')}
 $('capture-segment').addEventListener('change',renderCapturePlan);
-$('source-type').addEventListener('change',()=>{if(active||starting)return;updateSourceUI();if(diagnosticState.received)message('已切换输入设置。当前仍显示上次结果；开始后建立新的测试。')});
+$('source-type').addEventListener('change',()=>{if(active||starting)return;exitVideoReview();updateSourceUI();if(diagnosticState.received)message('已切换输入设置。当前仍显示上次结果；开始后建立新的测试。')});
 $('fall-mode').addEventListener('change',()=>{controls();message(`已选择${fallModeLabel($('fall-mode').value)}。开始后创建独立会话。`)});
 $('pose-model').addEventListener('change',()=>{controls();message(`已选择 ${modelLabel($('pose-model').value)}。开始后创建新的测试记录。`)});
-$('video-file').addEventListener('change',()=>{if(fileURL){URL.revokeObjectURL(fileURL);fileURL=null}const file=$('video-file').files[0];$('video-file-note').textContent=file?`${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`:'选择一段视频；文件在浏览器本地读取。';controls();if(diagnosticState.received)message('已更新视频选择。当前仍显示上次结果；开始后建立新的测试。')});
+$('video-file').addEventListener('change',()=>{exitVideoReview();resetVideoReview();if(fileURL){URL.revokeObjectURL(fileURL);fileURL=null}const file=$('video-file').files[0];$('video-file-note').textContent=file?`${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`:'选择一段视频；文件在浏览器本地读取。';controls();if(diagnosticState.received)message('已更新视频选择。当前仍显示上次结果；开始后建立新的测试。')});
+$('video-progress').addEventListener('input',event=>reviewVideoAt(Number(event.currentTarget.value)));
+$('video-review-exit').addEventListener('click',exitVideoReview);
+reviewSource.addEventListener('loadedmetadata',seekVideoReviewSource);
+reviewSource.addEventListener('loadeddata',paintVideoReviewFrame);
+reviewSource.addEventListener('seeked',paintVideoReviewFrame);
+reviewSource.addEventListener('error',()=>{if(videoReview.time!==null)$('view-status').textContent='无法读取此处视频画面'});
 $('refresh').onclick=()=>refreshCameras(true);navigator.mediaDevices?.addEventListener?.('devicechange',()=>{if(!active&&!starting)refreshCameras(false)});
 $('camera').addEventListener('change',()=>{$('camera-status').textContent='已选择：'+($('camera').selectedOptions[0]?.textContent||'默认摄像头')+'。点击开始。'});
 $('reset-view').onclick=resetView;
-$('start').onclick=()=>start(false);$('record').onclick=()=>start(true);$('stop').onclick=()=>stop();$('export-diagnostics').onclick=exportDiagnostics;
+$('start').onclick=()=>start(false);$('start-agent').onclick=()=>start(false,true);$('record').onclick=()=>start(true);$('stop').onclick=()=>stop();$('stop-agent').onclick=()=>stop('Agent 已停止；本次决策历史仍可查看。','Agent 已停止 · 历史保留');$('export-diagnostics').onclick=exportDiagnostics;
+$('agent-feedback').addEventListener('click',event=>{const button=event.target.closest('[data-agent-feedback]');if(button)submitAgentFeedback(button.dataset.agentFeedback)});
 window.addEventListener('beforeunload',event=>{if(recording||stopping||savedRecordings.some(entry=>!entry.downloaded)){event.preventDefault();event.returnValue=''}});
 window.addEventListener('pagehide',()=>{recording?.stop('pagehide');cleanupSession('页面已关闭','已关闭');if(fileURL)URL.revokeObjectURL(fileURL)});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&recording&&!stopping)stop('页面转入后台，已提前停止录像并保留当前内容。','已提前停止','page_hidden')});
 async function connect(){
  try{const response=await fetch('/status');if(!response.ok)throw Error('服务未就绪');serverStatus=await response.json();configureActionRevision(serverStatus);renderTemporal(null);modelOptions=(serverStatus.models||[]).filter(m=>m&&typeof m.id==='string');
+  $('agent-details').hidden=!serverStatus.agent;
   if(!modelOptions.length)modelOptions=[{id:'yolo11n-pose',label:serverStatus.model||'YOLO11n-Pose',available:Boolean(serverStatus.ready)}];
   $('pose-model').replaceChildren(...modelOptions.map(m=>{const option=new Option(m.label+(m.available?'':'（不可用）'),m.id);option.disabled=!m.available;return option}));
   const preferred=modelOptions.find(m=>m.id===(serverStatus.default_model||'yolo26n-pose')&&m.available)||modelOptions.find(m=>m.available);if(preferred)$('pose-model').value=preferred.id;ready=Boolean(serverStatus.ready&&preferred);
   const modes=serverStatus.fall_modes||[{id:'pose',label:'骨架规则对照',available:true}];$('fall-mode').replaceChildren(...modes.map(m=>{const option=new Option(m.label+(m.available?'':'（不可用）'),m.id);option.disabled=!m.available;return option}));$('fall-mode').value=modes.find(m=>m.id===serverStatus.default_fall_mode&&m.available)?.id||'pose';
   $('fall-model-note').textContent=serverStatus.rgb_fall_available?'骨架与起坐保持独立。实验倒地分支在验证同一人体下降与检测框共同位移后接续观察；不补画骨架。训练集与测试视频是否重叠未知。':'独立倒地模型不可用，当前可使用骨架规则对照。';
-  $('model').textContent=`本机服务 · ${String(serverStatus.device||'cpu').toUpperCase()} · ${modelOptions.filter(m=>m.available).map(m=>m.label).join(' / ')}`;updateSourceUI();message(ready?'已就绪，点击开始。':'暂无可用模型，请检查本地服务。',!ready);
+  $('model').textContent=`本机服务 · ${String(serverStatus.device||'cpu').toUpperCase()} · ${modelOptions.filter(m=>m.available).map(m=>m.label).join(' / ')}`;updateSourceUI();
+  $('agent-status').textContent=!serverStatus.agent?'Agent 未启用':serverStatus.agent.provider==='off'?'云端决策未启用':'等待开始 Agent 分析';
+  message(ready?'已就绪，点击开始。':'暂无可用模型，请检查本地服务。',!ready);
  }catch(error){ready=false;controls();message('无法连接本地服务，请启动项目中的 webcam_pose_demo.py 后刷新页面。',true)}
 }
 renderCapturePlan();updateSourceUI();connect();refreshCameras(false);

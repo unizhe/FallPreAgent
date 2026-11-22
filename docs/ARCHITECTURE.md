@@ -6,9 +6,10 @@
 
 | 入口 | 已实现的职责 | 当前边界 |
 | --- | --- | --- |
-| [摄像头演示服务](../scripts/webcam_pose_demo.py) + [网页](../assets/webcam/index.html) | 图像推理、目标关联、当前动作、跌倒事件、可选 ST-GCN++ 证据及受限事件融合 | 当前视觉主线；不自动执行对外报警；不包含实验二分类头 |
-| [PerceptionChain](../src/fallpre/weekly/perception_chain.py) + [JSONL 回放入口](../scripts/replay_perception_chain.py) | 将基础观测和时序结果组装为明确的感知工具输出，比较动作、过程判别、事件与通知 | 新链路的离线入口；实验二分类头没有报警决定权；尚未替换摄像头服务的完整输出协议 |
+| [摄像头演示服务](../scripts/webcam_pose_demo.py) + [网页](../assets/webcam/index.html) | 图像推理、目标关联、当前动作、跌倒事件、可选 ST-GCN++ 证据及受限事件融合；Agent 模式另接 C/D 诊断头 | 当前视觉主线；Agent 模式复用 `/infer`，不自动执行对外报警；判别头没有报警决定权 |
+| [PerceptionChain](../src/fallpre/weekly/perception_chain.py) + [JSONL 回放入口](../scripts/replay_perception_chain.py) | 将基础观测和时序结果组装为明确的感知工具输出，比较动作、过程判别、事件与通知 | 新链路的离线入口；仅 Agent 模式在真实摄像头结果上构建决策 envelope |
 | [单 Agent 回放](../scripts/replay_care_agent.py) / [CareLoop](../src/fallpre/care_loop.py) | 消费 schema v1 事件与观测，持久查询、去重、模拟提醒和报警 | 摄像头以显式适配或 JSONL 回放接入；JEV 单独做建议对照 |
+| [本地决策回放](../scripts/replay_decision_agent.py) / [DecisionLoop](../src/fallpre/decision_loop.py) | 保存 schema-v1 原观测、off/mock/显式 Aliyun 任务、不可变判断、查询和一次新证据重评 | Aliyun 仅由明确网络开关启用；独立 `decision_store.py`，不取得 EventStore 的确认、恢复或模拟报警权限 |
 | [CLI](../src/fallpre/cli.py) / [MVPService](../src/fallpre/service.py) | 早期 `Snapshot` 协议、风险规则及模拟工具 | 旧 MVP 独立入口 |
 
 `src/fallpre/weekly/` 虽然沿用实验阶段的目录名，但包含当前摄像头主线，不能把整个目录视为可删除的历史代码。`action_v2` 到 `action_v7` 之间也存在实际导入关系。带日期的实验脚本保留用于追溯，其默认输入可能属于原开发机；它们不是新成员的安装入口。
@@ -145,6 +146,10 @@ flowchart LR
 实时适配从主事件输出提取确认、身份和恢复信息。末段 ST＋几何影子服务的日志附带同一格式的 `perception` 对象。Agent 依据上游确认事件执行模拟报警，依据可见且连续的坐姿到起身观测执行普通提示。事件键、处理状态、恢复和执行回执的字段及演示命令见 [单 Agent 交接](care-agent-20261110.md) 与 [架构图](assets/single-agent-tools-20261111.html)。
 
 [FallPreventionAgent](../src/fallpre/agent.py) 通过 `describe_tools()/invoke()` 调用所选后端导出的工具。新感知走 `CareLoop` 的 `observe`，旧 `Snapshot` 和 `inspect_person` 仍走 `MVPService`。两条入口共享执行组件，业务规则由各自的上游负责。
+
+P1/P2 `DecisionLoop.observe` 将 `agent-observation-envelope.v1` 交给单独的 `DecisionStore`；源观测、任务登记、provider 结果和反馈分别落库。输入可以是合成观测或明确授权的 schema-v1 JSONL。off/mock 不读取凭据或联网；Aliyun 需由 CLI 同时显式选择 provider 和网络开关，P2 smoke 只接受内置合成场景。模型 state 是独立白名单构建，问题版本固定。provider 在事务外运行；任务级网络预算持久化，provider 每 attempt 至多发送一次，重试由 durable scheduler 管理。`latest()` 是按当前观测身份、质量和时间年龄计算的投影，绝不原地改写旧 ProviderResult。它旁路于 CareLoop，不调用模拟报警执行器。
+
+P3 在同一网页视频解码和 `/infer` 后加入 [AgentRuntime](../src/fallpre/agent_api.py)：只由服务配置选择 provider；每次 run 由服务端分配 session/stream，观测证据由真实推理结果生成。run、帧摘要、原始帧响应、决策任务、HTTP 预算和结果游标持久化。相同帧在 `infer_live` 前返回原响应，源时间冲突返回 409；决策 worker 与 owner-thread SQLite 连接异步运行，HTTP 视觉路径不等待云响应。结果游标表示完成记录顺序，`latest()` 仍按源时间与当前质量计算，两者不能混用。浏览器在服务端身份校验下查询、停止和提交反馈；模型估值不取得主事件或真实报警权限。远端服务没有 exactly-once 保证，worker 无法确认请求是否已到达时会终止该 attempt，不做不确定重发。
 
 ## 5. 当前工程边界
 
